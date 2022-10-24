@@ -1,0 +1,14 @@
+configName: default
+folderName: UART_proj
+format_version: v1.0
+frameworkPath: ..\..\Harmony3
+processor: PIC32MM0256GPM064
+projectName: UART_proj
+settings:
+  PackageFilter: bootloader;bootloader_apps_i2c;bootloader_apps_uart;bootloader_apps_usb;bsp;core;core_apps_pic32mm;crypto;csp;csp_apps_pic32mm;dev_packs;harmony-services;net;quick_docs;reference_apps;usb;usb_apps_device;usb_apps_dual_role;usb_apps_multi_controller
+  FORCE_OPTIMIZATION: 'false'
+  GENERATE_BACKUP: 'true'
+  TRUSTZONE: 'false'
+  CMSISPath: .\dev_packs\arm\CMSIS\5.8.0
+  MERGE_STRATEGY: USER_ALL
+  DFPPath: .\dev_packs\Microchip\PIC32MM_GPM_DFP\1.3.50\atdf\PIC32MM0256GPM064.atdf
