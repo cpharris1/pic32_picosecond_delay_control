@@ -61,6 +61,7 @@
 
 
 void TIMER_1_InterruptHandler( void );
+void ADC_InterruptHandler( void );
 void UART3_RX_InterruptHandler( void );
 void UART3_TX_InterruptHandler( void );
 void UART3_ERR_InterruptHandler( void );
@@ -71,6 +72,11 @@ void UART3_ERR_InterruptHandler( void );
 void __ISR(_TIMER_1_VECTOR, ipl1SOFT) TIMER_1_Handler (void)
 {
     TIMER_1_InterruptHandler();
+}
+
+void __ISR(_ADC_VECTOR, ipl1SOFT) ADC_Handler (void)
+{
+    ADC_InterruptHandler();
 }
 
 void __ISR(_UART3_RX_VECTOR, ipl1SOFT) UART3_RX_Handler (void)

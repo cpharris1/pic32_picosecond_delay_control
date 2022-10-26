@@ -48,13 +48,21 @@
 // *****************************************************************************
 // *****************************************************************************
 
+/* Object to hold callback function and context */
+ADC_CALLBACK_OBJECT ADC_CallbackObj;
 
 void ADC_Initialize(void)
 {
     AD1CON1CLR = _AD1CON1_ON_MASK;
 
+    AD1CON1 = 0x4;
     AD1CON3 = 0x1f04;
+    AD1CHS = 0xe;
 
+    /* Clear interrupt flag */
+    IFS1CLR = _IFS1_AD1IF_MASK;
+    /* Interrupt Enable */
+    IEC1SET = _IEC1_AD1IE_MASK;
 
     /* Turn ON ADC */
     AD1CON1SET = _AD1CON1_ON_MASK;
@@ -103,3 +111,18 @@ uint32_t ADC_ResultGet(ADC_RESULT_BUFFER bufferNumber)
     return (*((&ADC1BUF0) + (bufferNumber << 2)));
 }
 
+void ADC_CallbackRegister(ADC_CALLBACK callback, uintptr_t context)
+{
+    ADC_CallbackObj.callback_fn = callback;
+    ADC_CallbackObj.context = context;
+}
+
+void ADC_InterruptHandler(void)
+{
+    IFS1CLR = _IFS1_AD1IF_MASK;
+
+    if (ADC_CallbackObj.callback_fn != NULL)
+    {
+        ADC_CallbackObj.callback_fn(ADC_CallbackObj.context);
+    }
+}
