@@ -16,7 +16,7 @@ void UART_PutC(char data);
 int UARTprint(char *str);
 void printMenu(void);
 void clearScreen(void);
-
+void printWaitReturn(void);
 
 
 #ifdef	__cplusplus

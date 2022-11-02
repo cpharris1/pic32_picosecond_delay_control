@@ -180,6 +180,15 @@ void ADC_InputScanSelect(ADC_INPUTS_SCAN scanInputs);
 bool ADC_ResultIsReady(void);
 uint32_t ADC_ResultGet(ADC_RESULT_BUFFER bufferNumber);
 
+typedef void (*ADC_CALLBACK)(uintptr_t context);
+
+typedef struct
+{
+    ADC_CALLBACK callback_fn;
+    uintptr_t context;
+}ADC_CALLBACK_OBJECT;
+
+void ADC_CallbackRegister(ADC_CALLBACK callback, uintptr_t context);
 
 // *****************************************************************************
 
