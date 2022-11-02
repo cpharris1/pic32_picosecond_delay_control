@@ -34,13 +34,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: null
-- generatedChecksum: A0E54EEB823AC86EC0FA27ACD75F539A
+- generatedChecksum: 5D9C9699F2EE5A6CEC5D61031B497701
   logicalPath: config/default/peripheral/adc
   name: plib_adc.c
   physicalPath: peripheral/adc
   security: NON_SECURE
   type: SOURCE
-  userChecksum: A0E54EEB823AC86EC0FA27ACD75F539A
+  userChecksum: 5D9C9699F2EE5A6CEC5D61031B497701
 - generatedChecksum: 432373CAAEDC1E7E939C93771EBF59F8
   logicalPath: config/default/peripheral/clk
   name: plib_clk.c
