@@ -13,14 +13,26 @@
             <logicalFolder name="f6" displayName="adc" projectFiles="true">
               <itemPath>../src/config/default/peripheral/adc/plib_adc.h</itemPath>
             </logicalFolder>
+            <logicalFolder name="f9" displayName="cdac" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/cdac/plib_cdac1.h</itemPath>
+            </logicalFolder>
             <logicalFolder name="f2" displayName="clk" projectFiles="true">
               <itemPath>../src/config/default/peripheral/clk/plib_clk.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="f7" displayName="coretimer" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/coretimer/plib_coretimer.h</itemPath>
             </logicalFolder>
             <logicalFolder name="f4" displayName="evic" projectFiles="true">
               <itemPath>../src/config/default/peripheral/evic/plib_evic.h</itemPath>
             </logicalFolder>
             <logicalFolder name="f3" displayName="gpio" projectFiles="true">
               <itemPath>../src/config/default/peripheral/gpio/plib_gpio.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="f8" displayName="i2c" projectFiles="true">
+              <logicalFolder name="f1" displayName="master" projectFiles="true">
+                <itemPath>../src/config/default/peripheral/i2c/master/plib_i2c_master_common.h</itemPath>
+                <itemPath>../src/config/default/peripheral/i2c/master/plib_i2c3_master.h</itemPath>
+              </logicalFolder>
             </logicalFolder>
             <logicalFolder name="f5" displayName="tmr1" projectFiles="true">
               <itemPath>../src/config/default/peripheral/tmr1/plib_tmr1_common.h</itemPath>
@@ -59,14 +71,25 @@
             <logicalFolder name="f6" displayName="adc" projectFiles="true">
               <itemPath>../src/config/default/peripheral/adc/plib_adc.c</itemPath>
             </logicalFolder>
+            <logicalFolder name="f9" displayName="cdac" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/cdac/plib_cdac1.c</itemPath>
+            </logicalFolder>
             <logicalFolder name="f2" displayName="clk" projectFiles="true">
               <itemPath>../src/config/default/peripheral/clk/plib_clk.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="f7" displayName="coretimer" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/coretimer/plib_coretimer.c</itemPath>
             </logicalFolder>
             <logicalFolder name="f4" displayName="evic" projectFiles="true">
               <itemPath>../src/config/default/peripheral/evic/plib_evic.c</itemPath>
             </logicalFolder>
             <logicalFolder name="f3" displayName="gpio" projectFiles="true">
               <itemPath>../src/config/default/peripheral/gpio/plib_gpio.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="f8" displayName="i2c" projectFiles="true">
+              <logicalFolder name="f1" displayName="master" projectFiles="true">
+                <itemPath>../src/config/default/peripheral/i2c/master/plib_i2c3_master.c</itemPath>
+              </logicalFolder>
             </logicalFolder>
             <logicalFolder name="f5" displayName="tmr1" projectFiles="true">
               <itemPath>../src/config/default/peripheral/tmr1/plib_tmr1.c</itemPath>
@@ -86,8 +109,6 @@
       <itemPath>../src/main.c</itemPath>
       <itemPath>../src/uart_helper.c</itemPath>
       <itemPath>../src/uart_helper.h</itemPath>
-      <itemPath>../src/adc.c</itemPath>
-      <itemPath>../src/adc.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -95,9 +116,12 @@
       <logicalFolder name="f1" displayName="default.mhc" projectFiles="true">
         <itemPath>../src/config/default/default.mhc/adc.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/BSP_PIC32MM_USB_Curiosity.yml</itemPath>
+        <itemPath>../src/config/default/default.mhc/cdac1.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/core.yml</itemPath>
+        <itemPath>../src/config/default/default.mhc/core_timer.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/dfp.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/GraphSettings.yml</itemPath>
+        <itemPath>../src/config/default/default.mhc/i2c3.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/project.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/settings.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/tmr1.yml</itemPath>
