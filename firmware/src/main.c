@@ -31,10 +31,28 @@
 #define ADC_VREF                (3.3f)
 #define ADC_MAX_COUNT           (1023U)
 
+uint8_t state;
+#define INVALID = 0xff;
+enum {
+     IDLE = 0,
+     PRINT_MENU,
+     AWAIT_INPUT,
+     PROCESS_INPUT,
+     WAIT_RETURN,
+};
+
 volatile uint8_t heartbeat_en=1;
 uint16_t adc_count, adc_count2, adc_count3;
 float input_voltage;
 volatile bool result_ready = false;
+
+#define MCP4725_ADDR                        0x62 //7 bit addr, A0 to GND
+#define MCP4725_WRITE_DAC                   0x40 // Write DAC cmd 010
+#define MCP4725_TX_DATA_LENGTH              3    // addr, cmd, high, low
+#define APP_ACK_DATA_LENGTH                 1
+
+uint8_t MCP4725TxData[MCP4725_TX_DATA_LENGTH];
+
 
 void TIMER1_InterruptSvcRoutine(uint32_t status, uintptr_t context)
 {
@@ -51,21 +69,80 @@ void ADC_ResultHandler(uintptr_t context)
     result_ready = true;
 }
 
+volatile uint8_t I2C3TxStatus = 0;
+
+void MCP4725_I2CCallback(uintptr_t context )
+{
+    if(I2C3_ErrorGet() == I2C_ERROR_NONE)
+    {
+        I2C3TxStatus = 1;
+    }
+    else
+    {
+        I2C3TxStatus = 0;
+    }
+}
+
+uint8_t writeDAC(uint16_t val){        
+    uint16_t cnt = val;
+    if (val > 4095) cnt = 4095;
+    // Data 
+    MCP4725TxData[0] = MCP4725_WRITE_DAC;
+    MCP4725TxData[1] = (cnt & 0x0ff0) >> 4;
+    MCP4725TxData[2] = (cnt & 0xf) << 4;
+    //char buffer[50];
+    //sprintf(buffer, "Data bytes: %x %x\n\r", MCP4725TxData[1], MCP4725TxData[2]);
+    //UARTprint(buffer);
+    // wait for the current transfer to complete
+    while(I2C3_IsBusy());
+
+    // perform the next transfer
+    return I2C3_Write(MCP4725_ADDR, &MCP4725TxData[0], MCP4725_TX_DATA_LENGTH);
+    return 0;
+}
+
+void getStr(char* string, int size){
+    char x;
+    int i=0;
+    while(1){
+        if (IFS1bits.U3RXIF)    //If we have received a char,
+        {
+            x=U3RXREG;          //read it
+            U3TXREG=x;          //echo it back
+            if(x=='\n' || x=='\r')          //If that char was newline
+            {
+                UARTprint("\n\r");
+                string[i] = '\0';
+                IFS1bits.U3RXIF=0;
+                break;
+            }
+            else{
+                if(x > 33){
+                    string[i++] = x;
+                }
+            }
+            IFS1bits.U3RXIF=0;
+        }
+        if(i > size){
+            UARTprint("\n\r");
+            string[i] = '\0';
+            break;
+        }
+    }
+    return;
+}
+
+bool validOption(char opt){
+    return opt == '1' || opt == '2' || opt =='3';
+}
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: Main Entry Point
 // *****************************************************************************
 // *****************************************************************************
 
-uint8_t state;
 
-enum {
-     IDLE = 0,
-     PRINT_MENU,
-     AWAIT_INPUT,
-     PROCESS_INPUT,
-     WAIT_RETURN
-};
 
 int main ( void )
 {
@@ -79,10 +156,16 @@ int main ( void )
     ADC_CallbackRegister(ADC_ResultHandler, (uintptr_t)NULL);
     ADC_ConversionStart();
     
+    
+    I2C3_CallbackRegister(MCP4725_I2CCallback, (uintptr_t)NULL );
+    TRISBbits.TRISB7 = 1;
+    TRISBbits.TRISB13 = 1;
+    
     // Initialize FSM
     char c='0';
     char menuOpt = '0';
     state = PRINT_MENU;
+    char str[100];
 
     while ( true )
     {
@@ -99,18 +182,26 @@ int main ( void )
                 state = AWAIT_INPUT;
                 break;
             case AWAIT_INPUT:
-                //UARTprint("in AWAIT\n\r");
+                /*menuOpt = '0';
+                ;char input[10];
+                getStr(input, 1);
+                if(validOption(input[0])){
+                    state = PROCESS_INPUT;
+                    menuOpt = input[0];
+                }
+                else{
+                    state = PROCESS_INPUT;
+                    menuOpt = 'z';
+                }*/
                 if (IFS1bits.U3RXIF)    //If we have received a char,
                 {
                     c=U3RXREG;          //read it
                     U3TXREG=c;          //echo it back
-                    if(c=='\n' || c=='\r')          //If that char was "A" then send a bunch of long stuff.
+                    if(validOption(c)) menuOpt = c;
+                    if(c=='\r' || c=='\n')          //If that char was "A" then send a bunch of long stuff.
                     {
                         UARTprint("\n\r");
                         state = PROCESS_INPUT;
-                    }
-                    else{
-                        menuOpt = c;
                     }
                     IFS1bits.U3RXIF=0;
                 }
@@ -135,7 +226,6 @@ int main ( void )
                         if(result_ready == true)
                         {
                             //TODO: make this into a function.. and use an array to store ADC counts
-                            char str[100];
                             result_ready = false;
                             input_voltage = (float)adc_count * ADC_VREF / ADC_MAX_COUNT;
                             sprintf(str, "RB1(AN3) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
@@ -154,7 +244,26 @@ int main ( void )
                         state = WAIT_RETURN;
                         break;
                     case '3':
-                        UARTprint("Option 3 selected\n\r");
+                        UARTprint("Input decimal number to write to DAC: ");
+                        //uint16_t dac_val = 0x0000; //Should be half
+                        char dac[10];
+                        getStr(dac, 10);
+                        
+                        //uint16_t dac_int = atoi(dac);
+                        float dac_float = atof(dac);
+                        uint16_t dac_val = dac_float * 4096 / 3.3;
+                        if(!writeDAC(dac_val)){
+                            UARTprint("Error occurred while writing to DAC\n\r");
+                        }
+                        else{
+                            sprintf(str,"Successfully wrote %f to DAC\n\r", dac_float);
+                            UARTprint(str);
+                        }
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case '4':
+                        UARTprint("Option 4 Selected\n\r");
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
@@ -171,7 +280,7 @@ int main ( void )
                 {
                     c=U3RXREG;          //read it
                     U3TXREG=c;          //echo it back
-                    if(c=='\n' || c=='\r')          //If that char was "A" then send a bunch of long stuff.
+                    if(c=='\r' || c=='\n')          //If that char was "A" then send a bunch of long stuff.
                     {
                         UARTprint("\n\r");
                         state = PRINT_MENU;
@@ -180,6 +289,10 @@ int main ( void )
                 }
                 menuOpt = '0';
                 break;
+            default:
+                UARTprint("Invalid option selected\n\r");
+                printWaitReturn();
+                state = WAIT_RETURN;
         }                    
        
     }

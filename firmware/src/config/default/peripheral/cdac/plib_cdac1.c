@@ -1,26 +1,25 @@
 /*******************************************************************************
- System Interrupts File
+  Control Digital-to-Analog Converter (CDAC1) PLIB
 
   Company:
     Microchip Technology Inc.
 
   File Name:
-    interrupt.c
+    plib_cdac1.c
 
   Summary:
-    Interrupt vectors mapping
+    CDAC1 PLIB Implementation file
 
   Description:
-    This file maps all the interrupt vectors to their corresponding
-    implementations. If a particular module interrupt is used, then its ISR
-    definition can be found in corresponding PLIB source file. If a module
-    interrupt is not used, then its ISR implementation is mapped to dummy
-    handler.
- *******************************************************************************/
+    This file defines the interface to the CDAC peripheral library. This
+    library provides access to and control of the associated peripheral
+    instance.
+
+*******************************************************************************/
 
 // DOM-IGNORE-BEGIN
 /*******************************************************************************
-* Copyright (C) 2018 Microchip Technology Inc. and its subsidiaries.
+* Copyright (C) 2019 Microchip Technology Inc. and its subsidiaries.
 *
 * Subject to your compliance with these terms, you may use Microchip software
 * and any derivatives exclusively with Microchip products. It is your
@@ -40,7 +39,7 @@
 * FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
 * ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
- *******************************************************************************/
+*******************************************************************************/
 // DOM-IGNORE-END
 
 // *****************************************************************************
@@ -49,66 +48,29 @@
 // *****************************************************************************
 // *****************************************************************************
 
-#include "interrupts.h"
-#include "definitions.h"
-
+#include "plib_cdac1.h"
+#include "device.h"
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: System Interrupt Vector Functions
+// Section: CDAC1 Interface Routines
 // *****************************************************************************
 // *****************************************************************************
 
-
-void TIMER_1_InterruptHandler( void );
-void ADC_InterruptHandler( void );
-void UART3_RX_InterruptHandler( void );
-void UART3_TX_InterruptHandler( void );
-void UART3_ERR_InterruptHandler( void );
-void I2C3_MASTER_InterruptHandler( void );
-void I2C3_BUS_InterruptHandler( void );
-
-
-
-/* All the handlers are defined here.  Each will call its PLIB-specific function. */
-void __ISR(_TIMER_1_VECTOR, ipl1SOFT) TIMER_1_Handler (void)
+void CDAC1_Initialize( void )
 {
-    TIMER_1_InterruptHandler();
+    /* Configure reference source */
+    DAC1CONbits.REFSEL = 3;
+
+    /* Configure output buffer enable */
+    DAC1CONbits.DACOE = 1;
+
+    /* Enable CDAC1 */
+    DAC1CONbits.ON = 1;
 }
 
-void __ISR(_ADC_VECTOR, ipl1SOFT) ADC_Handler (void)
+void CDAC1_DataWrite( uint16_t data )
 {
-    ADC_InterruptHandler();
+    /* Write input data */
+    DAC1CONbits.DACDAT = data;
 }
-
-void __ISR(_UART3_RX_VECTOR, ipl1SOFT) UART3_RX_Handler (void)
-{
-    UART3_RX_InterruptHandler();
-}
-
-void __ISR(_UART3_TX_VECTOR, ipl1SOFT) UART3_TX_Handler (void)
-{
-    UART3_TX_InterruptHandler();
-}
-
-void __ISR(_UART3_ERR_VECTOR, ipl1SOFT) UART3_ERR_Handler (void)
-{
-    UART3_ERR_InterruptHandler();
-}
-
-void __ISR(_I2C3_MASTER_VECTOR, ipl1SOFT) I2C3_MASTER_Handler (void)
-{
-    I2C3_MASTER_InterruptHandler();
-}
-
-void __ISR(_I2C3_BUS_VECTOR, ipl1SOFT) I2C3_BUS_Handler (void)
-{
-    I2C3_BUS_InterruptHandler();
-}
-
-
-
-
-/*******************************************************************************
- End of File
-*/

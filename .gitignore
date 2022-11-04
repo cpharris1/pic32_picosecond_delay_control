@@ -58,5 +58,4 @@ dkms.conf
 /firmware/pic32_picosecond_delay_control.X/debug/
 /firmware/pic32_picosecond_delay_control.X/dist/
 /firmware/pic32_picosecond_delay_control.X/nbproject/private/
-/firmware/pic32_picosecond_delay_control.X/nbproject/Makefile-*
 /firmware/pic32_picosecond_delay_control.X/nbproject/Package-*
