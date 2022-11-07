@@ -8,20 +8,12 @@
 #ifndef UART_HELPER_H
 #define	UART_HELPER_H
 
-#ifdef	__cplusplus
-extern "C" {
-#endif
-
 void UART_PutC(char data);
 int UARTprint(char *str);
 void printMenu(void);
 void clearScreen(void);
 void printWaitReturn(void);
-
-
-#ifdef	__cplusplus
-}
-#endif
+void getStr(char* string, int size);
 
 #endif	/* UART_HELPER_H */
 
