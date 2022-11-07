@@ -133,8 +133,47 @@ void getStr(char* string, int size){
 }
 
 bool validOption(char opt){
-    return opt == '1' || opt == '2' || opt =='3';
+    return opt == '1' || opt == '2' || opt =='3'|| opt =='4';
 }
+
+//Below is for the Temp/Humid Sensor (DHT11)
+
+unsigned char Check, T_byte1, T_byte2,
+ RH_byte1, RH_byte2, Ch ;
+ unsigned Temp, RH, Sum ;
+void StartSignal(){
+ GPIO_PinOutputEnable(GPIO_PIN_RD0);
+ GPIO_PinClear(GPIO_PIN_RD0);
+    CORETIMER_DelayMs(18);
+ GPIO_PinSet(GPIO_PIN_RD0);
+    CORETIMER_DelayUs(30);
+ GPIO_PinInputEnable(GPIO_PIN_RD0);
+ }
+ //////////////////////////////
+ void CheckResponse(){
+    Check = 0;
+    CORETIMER_DelayUs(40);
+    if (GPIO_PinRead(GPIO_PIN_RD0) == 0){
+       CORETIMER_DelayUs(80);
+        if (GPIO_PinRead(GPIO_PIN_RD0) == 1) {
+            Check = 1; 
+           CORETIMER_DelayUs(40);
+        }
+    }
+ }
+   //////////////////////////////
+char ReadData(){
+    char i=0, j;
+    for(j = 0; j < 8; j++){
+    while(!GPIO_PinRead(GPIO_PIN_RD0)); //Wait until PORTD.F0 goes HIGH
+    CORETIMER_DelayUs(30);
+    if(GPIO_PinRead(GPIO_PIN_RD0) == 0)
+        i&= ~(1<<(7 - j)); //Clear bit (7-b)
+    else {i|= (1 << (7 - j)); //Set bit (7-b)
+    while(GPIO_PinRead(GPIO_PIN_RD0));} //Wait until PORTD.F0 goes LOW
+    }
+ return i;
+ }
 
 // *****************************************************************************
 // *****************************************************************************
@@ -172,6 +211,7 @@ int main ( void )
         /* Maintain state machines of all polled MPLAB Harmony modules. */
         SYS_Tasks ( );
         ADC_ConversionStart();
+        GPIO_PinSet(GPIO_PIN_RD0);
         
         switch(state){
             case IDLE:
@@ -263,7 +303,25 @@ int main ( void )
                         state = WAIT_RETURN;
                         break;
                     case '4':
-                        UARTprint("Option 4 Selected\n\r");
+                     
+                        StartSignal();
+                        CheckResponse();
+                        if(Check == 1){
+                            RH_byte1 = ReadData();
+                            RH_byte2 = ReadData();
+                            T_byte1 = ReadData();
+                            T_byte2 = ReadData();
+                            Sum = ReadData();
+                            if(Sum == ((RH_byte1+RH_byte2+T_byte1+T_byte2) & 0XFF)){
+                                RH = RH_byte1;
+                                Temp = T_byte1;
+                            }
+                        }
+                        sprintf(str, "Temperature is %d \n\r", Temp);
+                        UARTprint(str);
+                        sprintf(str, "Humidity is %d \n\r", RH);
+                        UARTprint(str);
+                        
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;

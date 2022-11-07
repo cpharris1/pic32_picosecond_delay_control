@@ -29,7 +29,7 @@ void printMenu(void){
     UARTprint("1. Enable/Disable Heartbeat LED\n\r");
     UARTprint("2. Show Data from ADC\n\r");
     UARTprint("3. Write to I2C DAC\n\r");
-    UARTprint("4. Option 4\n\r");;
+    UARTprint("4. Show Temperature and Humidity\n\r");;
     UARTprint("\n\rPlease input selection: ");
 }
 
