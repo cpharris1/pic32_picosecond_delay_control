@@ -15,7 +15,7 @@ build/default/production/_ext/1360937237/main.o: ../src/main.c \
  ../src/config/default/peripheral/tmr1/plib_tmr1_common.h \
  ../src/config/default/peripheral/adc/plib_adc.h \
  ../src/config/default/bsp/bsp.h ../src/uart_helper.h ../src/dac.h \
- ../src/adc.h
+ ../src/adc.h ../src/dht11.h
 
 ../src/config/default/definitions.h:
 
@@ -54,3 +54,5 @@ build/default/production/_ext/1360937237/main.o: ../src/main.c \
 ../src/dac.h:
 
 ../src/adc.h:
+
+../src/dht11.h:

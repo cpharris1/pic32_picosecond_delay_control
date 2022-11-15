@@ -7,6 +7,7 @@
             <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/uart_helper.c</file>
             <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/adc.c</file>
             <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/config/default/interrupts.h</file>
+            <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/config/default/peripheral/coretimer/plib_coretimer.c</file>
             <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/dac.c</file>
             <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/dht11.h</file>
             <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/dht11.c</file>

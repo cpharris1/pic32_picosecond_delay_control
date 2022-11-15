@@ -25,12 +25,12 @@ int UARTprint(char *str)
 }
 
 void printMenu(void){
-    UARTprint("PIC32 Picosecond Delay Control (v1.6)\n\r\n\r");
+    UARTprint("PIC32 Picosecond Delay Control (v1.0)\n\r\n\r");
     UARTprint("1. Enable/Disable Heartbeat LED\n\r");
     UARTprint("2. Show Data from ADC\n\r");
-    UARTprint("3. Write to I2C DAC\n\r");
-    UARTprint("4. Show Temperature and Humidity\n\r");
-    UARTprint("5. DAC Ramp Demo\n\r");;
+    UARTprint("3. Write Voltage to I2C DAC\n\r");
+    UARTprint("4. Show Temperature and Humidity Data\n\r");
+    UARTprint("5. DAC Sweep (1.5V-2.0V)\n\r");;
     UARTprint("\n\rPlease input selection: ");
 }
 

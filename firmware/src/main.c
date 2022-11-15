@@ -30,6 +30,7 @@
 #include "uart_helper.h"
 #include "dac.h"
 #include "adc.h"
+#include "dht11.h"
 
 uint8_t state;
 enum {
@@ -53,40 +54,6 @@ bool validOption(char opt){
 
 //Below is for the Temp/Humid Sensor (DHT11)
 
-unsigned char Check, T_byte1, T_byte2, RH_byte1, RH_byte2, Ch ;
-unsigned Temp, RH, Sum ;
-void StartSignal(){
-    GPIO_PinOutputEnable(GPIO_PIN_RD0);
-    GPIO_PinClear(GPIO_PIN_RD0);
-    CORETIMER_DelayMs(18);
-    GPIO_PinSet(GPIO_PIN_RD0);
-    CORETIMER_DelayUs(30);
-    GPIO_PinInputEnable(GPIO_PIN_RD0);
-}
- //////////////////////////////
- void CheckResponse(){
-    Check = 0;
-    CORETIMER_DelayUs(40);
-    if (GPIO_PinRead(GPIO_PIN_RD0) == 0){
-       CORETIMER_DelayUs(80);
-        if (GPIO_PinRead(GPIO_PIN_RD0) == 1) {
-            Check = 1; 
-           CORETIMER_DelayUs(40);
-        }
-    }
- }
-   //////////////////////////////
-char ReadData(){
-    char i=0, j;
-    for(j = 0; j < 8; j++){
-        while(!GPIO_PinRead(GPIO_PIN_RD0)); //Wait until PORTD.F0 goes HIGH
-        CORETIMER_DelayUs(30);
-        if(GPIO_PinRead(GPIO_PIN_RD0) == 0) i&= ~(1<<(7 - j)); //Clear bit (7-b)
-        else {i|= (1 << (7 - j)); //Set bit (7-b)
-        while(GPIO_PinRead(GPIO_PIN_RD0));} //Wait until PORTD.F0 goes LOW
-    }
-    return i;
- }
 
 // *****************************************************************************
 // *****************************************************************************
@@ -217,18 +184,20 @@ int main ( void )
                                 Temp = T_byte1;
                             }
                         }
-                        sprintf(str, "Temperature is %d \n\r", Temp);
+                        sprintf(str, "Temperature is %d degrees C \n\r", Temp);
                         UARTprint(str);
-                        sprintf(str, "Humidity is %d \n\r", RH);
+                        sprintf(str, "Humidity is %d %%RH \n\r", RH);
                         UARTprint(str);
                         
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
                     case '5':
-                        for(uint16_t val = 0; val < 4096; val++){
+                        writeDAC(1860);
+                        CORETIMER_DelayMs(2000);
+                        for(uint16_t val = 1860; val < 2482; val++){
                             writeDAC(val);
-                            CORETIMER_DelayUs(5);
+                            CORETIMER_DelayMs(800);
                         }
                         printWaitReturn();
                         state = WAIT_RETURN;

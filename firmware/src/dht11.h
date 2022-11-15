@@ -8,16 +8,12 @@
 #ifndef DHT11_H
 #define	DHT11_H
 
-#ifdef	__cplusplus
-extern "C" {
-#endif
+extern unsigned char Check, T_byte1, T_byte2, RH_byte1, RH_byte2, Ch ;
+extern unsigned Temp, RH, Sum ;
 
-
-
-
-#ifdef	__cplusplus
-}
-#endif
+void StartSignal();
+void CheckResponse();
+char ReadData();
 
 #endif	/* DHT11_H */
 
