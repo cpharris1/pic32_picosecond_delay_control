@@ -25,11 +25,12 @@ int UARTprint(char *str)
 }
 
 void printMenu(void){
-    UARTprint("PIC32 Picosecond Delay Control Menu\n\r\n\r");
+    UARTprint("PIC32 Picosecond Delay Control (v1.0)\n\r\n\r");
     UARTprint("1. Enable/Disable Heartbeat LED\n\r");
     UARTprint("2. Show Data from ADC\n\r");
-    UARTprint("3. Write to I2C DAC\n\r");
-    UARTprint("4. Show Temperature and Humidity\n\r");;
+    UARTprint("3. Write Voltage to I2C DAC\n\r");
+    UARTprint("4. Show Temperature and Humidity Data\n\r");
+    UARTprint("5. DAC Sweep (1.5V-2.0V)\n\r");;
     UARTprint("\n\rPlease input selection: ");
 }
 
@@ -40,4 +41,35 @@ void clearScreen(void){
 
 void printWaitReturn(void){
     UARTprint("\n\rPlease press ENTER to continue.");
+}
+
+void getStr(char* string, int size){
+    char x;
+    int i=0;
+    while(1){
+        if (IFS1bits.U3RXIF)    //If we have received a char,
+        {
+            x=U3RXREG;          //read it
+            U3TXREG=x;          //echo it back
+            if(x=='\n' || x=='\r')          //If that char was newline
+            {
+                UARTprint("\n\r");
+                string[i] = '\0';
+                IFS1bits.U3RXIF=0;
+                break;
+            }
+            else{
+                if(x > 33){
+                    string[i++] = x;
+                }
+            }
+            IFS1bits.U3RXIF=0;
+        }
+        if(i > size){
+            UARTprint("\n\r");
+            string[i] = '\0';
+            break;
+        }
+    }
+    return;
 }

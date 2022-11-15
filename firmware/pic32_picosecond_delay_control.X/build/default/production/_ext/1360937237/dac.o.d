@@ -1,4 +1,4 @@
-build/default/production/_ext/1360937237/main.o: ../src/main.c \
+build/default/production/_ext/1360937237/dac.o: ../src/dac.c \
  ../src/config/default/definitions.h \
  ../src/config/default/peripheral/coretimer/plib_coretimer.h \
  ../src/config/default/peripheral/uart/plib_uart3.h \
@@ -14,8 +14,7 @@ build/default/production/_ext/1360937237/main.o: ../src/main.c \
  ../src/config/default/peripheral/tmr1/plib_tmr1.h \
  ../src/config/default/peripheral/tmr1/plib_tmr1_common.h \
  ../src/config/default/peripheral/adc/plib_adc.h \
- ../src/config/default/bsp/bsp.h ../src/uart_helper.h ../src/dac.h \
- ../src/adc.h ../src/dht11.h
+ ../src/config/default/bsp/bsp.h ../src/uart_helper.h ../src/dac.h
 
 ../src/config/default/definitions.h:
 
@@ -52,7 +51,3 @@ build/default/production/_ext/1360937237/main.o: ../src/main.c \
 ../src/uart_helper.h:
 
 ../src/dac.h:
-
-../src/adc.h:
-
-../src/dht11.h:
