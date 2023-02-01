@@ -7,7 +7,8 @@
 #include "uart_helper.h"
 
 unsigned char Check, T_byte1, T_byte2, RH_byte1, RH_byte2, Ch ;
-unsigned Temp, RH, Sum ;
+uint8_t Temp, RH, RH_dec, Temp_dec, Sum ;
+uint8_t T[300],Tdec[300],RHa[300],RHdec[300];
 
 void StartSignal(){
     GPIO_PinOutputEnable(GPIO_PIN_RD0);

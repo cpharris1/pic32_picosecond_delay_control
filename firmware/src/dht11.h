@@ -9,7 +9,8 @@
 #define	DHT11_H
 
 extern unsigned char Check, T_byte1, T_byte2, RH_byte1, RH_byte2, Ch ;
-extern unsigned Temp, RH, Sum ;
+extern uint8_t Temp, RH, RH_dec, Temp_dec, Sum ;
+extern uint8_t T[300],Tdec[300],RHa[300],RHdec[300];
 
 void StartSignal();
 void CheckResponse();

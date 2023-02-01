@@ -49,7 +49,7 @@ void TIMER1_InterruptSvcRoutine(uint32_t status, uintptr_t context)
 }
 
 bool validOption(char opt){
-    return opt >= '1' && opt <= '5';
+    return opt >= '1' && opt <= '6';
 }
 
 //Below is for the Temp/Humid Sensor (DHT11)
@@ -83,6 +83,7 @@ int main ( void )
     char menuOpt = '0';
     state = PRINT_MENU;
     char str[100];
+    int i=0;
 
     while ( true )
     {
@@ -181,12 +182,14 @@ int main ( void )
                             Sum = ReadData();
                             if(Sum == ((RH_byte1+RH_byte2+T_byte1+T_byte2) & 0XFF)){
                                 RH = RH_byte1;
+                                RH_dec = RH_byte2;
                                 Temp = T_byte1;
+                                Temp_dec = T_byte2;
                             }
                         }
-                        sprintf(str, "Temperature is %d degrees C \n\r", Temp);
+                        sprintf(str, "Temperature is %d.%d degrees C \n\r", Temp,Temp_dec);
                         UARTprint(str);
-                        sprintf(str, "Humidity is %d %%RH \n\r", RH);
+                        sprintf(str, "Humidity is %d.%d %%RH \n\r", RH, RH_dec);
                         UARTprint(str);
                         
                         printWaitReturn();
@@ -198,6 +201,42 @@ int main ( void )
                         for(uint16_t val = 1860; val < 2482; val++){
                             writeDAC(val);
                             CORETIMER_DelayMs(800);
+                        }
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case '6':
+                        /*run temp/humidity test*/
+                        UARTprint("Option 6 selected, temp test \n\r");
+                        i = 0;
+                        uint8_t Sum2=0;
+                        while(i<5){
+                            StartSignal();
+                            CheckResponse();
+                            if(Check == 1){
+                                RH_byte1 = ReadData();
+                                RH_byte2 = ReadData();
+                                T_byte1 = ReadData();
+                                T_byte2 = ReadData();
+                                Sum = ReadData();
+                                Sum2 = ((RH_byte1+RH_byte2+T_byte1+T_byte2) & 0XFF);
+                                if(Sum == Sum2){
+                                    RHa[i] = RH_byte1;
+                                    RHdec[i] = RH_byte2;
+                                    T[i] = T_byte1;
+                                    Tdec[i] = T_byte2;
+                                    sprintf(str,"hit \n\r");
+                                    UARTprint(str);
+                                } 
+                            }
+                            sprintf(str, "ARRAY: Temperature is %d.%d degrees C \n\r", T[i],Tdec[i]);
+                            UARTprint(str);
+                            
+                            sprintf(str, "ARRAY: Humidity is %d.%d %%RH \n\r", RHa[i], RHdec[i]);
+                            UARTprint(str);
+                            
+                            CORETIMER_DelayMs(1200); //don't go below 1.2 s
+                            i++;
                         }
                         printWaitReturn();
                         state = WAIT_RETURN;

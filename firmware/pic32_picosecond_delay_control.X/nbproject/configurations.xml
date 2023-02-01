@@ -116,6 +116,40 @@
       <itemPath>../src/dht11.h</itemPath>
       <itemPath>../src/dht11.c</itemPath>
     </logicalFolder>
+    <logicalFolder name="src" displayName="src" projectFiles="true">
+      <logicalFolder name="config" displayName="config" projectFiles="true">
+        <logicalFolder name="default" displayName="default" projectFiles="true">
+          <logicalFolder name="bsp" displayName="bsp" projectFiles="true">
+          </logicalFolder>
+          <logicalFolder name="default.mhc" displayName="default.mhc" projectFiles="true">
+          </logicalFolder>
+          <logicalFolder name="peripheral" displayName="peripheral" projectFiles="true">
+            <logicalFolder name="adc" displayName="adc" projectFiles="true">
+            </logicalFolder>
+            <logicalFolder name="cdac" displayName="cdac" projectFiles="true">
+            </logicalFolder>
+            <logicalFolder name="clk" displayName="clk" projectFiles="true">
+            </logicalFolder>
+            <logicalFolder name="coretimer" displayName="coretimer" projectFiles="true">
+            </logicalFolder>
+            <logicalFolder name="evic" displayName="evic" projectFiles="true">
+            </logicalFolder>
+            <logicalFolder name="gpio" displayName="gpio" projectFiles="true">
+            </logicalFolder>
+            <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
+              <logicalFolder name="master" displayName="master" projectFiles="true">
+              </logicalFolder>
+            </logicalFolder>
+            <logicalFolder name="tmr1" displayName="tmr1" projectFiles="true">
+            </logicalFolder>
+            <logicalFolder name="uart" displayName="uart" projectFiles="true">
+            </logicalFolder>
+          </logicalFolder>
+          <logicalFolder name="stdio" displayName="stdio" projectFiles="true">
+          </logicalFolder>
+        </logicalFolder>
+      </logicalFolder>
+    </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="false">
@@ -327,6 +361,7 @@
         <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="lastid" value=""/>
         <property key="memories.configurationmemory" value="true"/>
         <property key="memories.dataflash" value="true"/>
