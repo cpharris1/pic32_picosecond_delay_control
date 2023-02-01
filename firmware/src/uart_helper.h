@@ -14,6 +14,7 @@ void printMenu(void);
 void clearScreen(void);
 void printWaitReturn(void);
 void getStr(char* string, int size);
+uint8_t isValidDecimal(char* str);
 
 #endif	/* UART_HELPER_H */
 
