@@ -1,3 +1,7 @@
 .vscode/
 
 /firmware/pic32_picosecond_delay_control.X/.generated_files/
+*.o.d
+*.o
+*.X.production*
+memoryfile.xml
