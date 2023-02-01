@@ -62,6 +62,37 @@
 // *****************************************************************************
 
 
+/*** Macros for GPIO_RB15_CLICK_PWM pin ***/
+#define GPIO_RB15_CLICK_PWM_Set()               (LATBSET = (1<<15))
+#define GPIO_RB15_CLICK_PWM_Clear()             (LATBCLR = (1<<15))
+#define GPIO_RB15_CLICK_PWM_Toggle()            (LATBINV= (1<<15))
+#define GPIO_RB15_CLICK_PWM_OutputEnable()      (TRISBCLR = (1<<15))
+#define GPIO_RB15_CLICK_PWM_InputEnable()       (TRISBSET = (1<<15))
+#define GPIO_RB15_CLICK_PWM_Get()               ((PORTB >> 15) & 0x1)
+#define GPIO_RB15_CLICK_PWM_PIN                  GPIO_PIN_RB15
+
+/*** Macros for GPIO_RB1_CLICK_INT pin ***/
+#define GPIO_RB1_CLICK_INT_Set()               (LATBSET = (1<<1))
+#define GPIO_RB1_CLICK_INT_Clear()             (LATBCLR = (1<<1))
+#define GPIO_RB1_CLICK_INT_Toggle()            (LATBINV= (1<<1))
+#define GPIO_RB1_CLICK_INT_OutputEnable()      (TRISBCLR = (1<<1))
+#define GPIO_RB1_CLICK_INT_InputEnable()       (TRISBSET = (1<<1))
+#define GPIO_RB1_CLICK_INT_Get()               ((PORTB >> 1) & 0x1)
+#define GPIO_RB1_CLICK_INT_PIN                  GPIO_PIN_RB1
+
+/*** Macros for GPIO_RB2_CLICK_CS pin ***/
+#define GPIO_RB2_CLICK_CS_Set()               (LATBSET = (1<<2))
+#define GPIO_RB2_CLICK_CS_Clear()             (LATBCLR = (1<<2))
+#define GPIO_RB2_CLICK_CS_Toggle()            (LATBINV= (1<<2))
+#define GPIO_RB2_CLICK_CS_OutputEnable()      (TRISBCLR = (1<<2))
+#define GPIO_RB2_CLICK_CS_InputEnable()       (TRISBSET = (1<<2))
+#define GPIO_RB2_CLICK_CS_Get()               ((PORTB >> 2) & 0x1)
+#define GPIO_RB2_CLICK_CS_PIN                  GPIO_PIN_RB2
+
+/*** Macros for POT pin ***/
+#define POT_Get()               ((PORTC >> 8) & 0x1)
+#define POT_PIN                  GPIO_PIN_RC8
+
 
 // *****************************************************************************
 /* GPIO Port
