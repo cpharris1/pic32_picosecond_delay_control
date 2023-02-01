@@ -25,7 +25,11 @@ int UARTprint(char *str)
 }
 
 void printMenu(void){
+<<<<<<< HEAD
     UARTprint("PIC32 Picosecond Delay Control (v1.2)\n\r\n\r");
+=======
+    UARTprint("PIC32 Picosecond Delay Control (v1.0)\n\r\n\r");
+>>>>>>> master
     UARTprint("1. Enable/Disable Heartbeat LED\n\r");
     UARTprint("2. Show Data from ADC\n\r");
     UARTprint("3. Write Voltage to I2C DAC\n\r");
@@ -72,6 +76,7 @@ void getStr(char* string, int size){
         }
     }
     return;
+<<<<<<< HEAD
 }
 
 uint8_t isValidDecimal(char* str){
@@ -84,4 +89,6 @@ uint8_t isValidDecimal(char* str){
     }
     if(decimalCnt>1) return 0;
     return 1;
+=======
+>>>>>>> master
 }
