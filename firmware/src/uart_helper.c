@@ -4,7 +4,7 @@
 #include <string.h>
 #include "definitions.h"                // SYS function prototypes
 #include "uart_helper.h"
-
+#include <ctype.h>
 
 void UART_PutC(char data){
     while(U3STAbits.UTXBF);
@@ -25,7 +25,7 @@ int UARTprint(char *str)
 }
 
 void printMenu(void){
-    UARTprint("PIC32 Picosecond Delay Control (v1.0)\n\r\n\r");
+    UARTprint("PIC32 Picosecond Delay Control (v1.2)\n\r\n\r");
     UARTprint("1. Enable/Disable Heartbeat LED\n\r");
     UARTprint("2. Show Data from ADC\n\r");
     UARTprint("3. Write Voltage to I2C DAC\n\r");
@@ -72,4 +72,16 @@ void getStr(char* string, int size){
         }
     }
     return;
+}
+
+uint8_t isValidDecimal(char* str){
+    uint8_t decimalCnt=0;
+    for(int i=0; i<strlen(str); i++){
+        if(!isdigit(str[i]) && (str[i] != '.'&& str[i] != '\n' && str[i] != '\r'&& str[i] != '-')){
+            return 0;
+        }
+        if(str[i]=='.') decimalCnt++;
+    }
+    if(decimalCnt>1) return 0;
+    return 1;
 }

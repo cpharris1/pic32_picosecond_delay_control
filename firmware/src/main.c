@@ -80,7 +80,7 @@ int main ( void )
     
     // Initialize FSM
     char c='0';
-    char menuOpt = '0';
+    char menuSelect = '0';
     state = PRINT_MENU;
     char str[100];
 
@@ -104,7 +104,7 @@ int main ( void )
                 {
                     c=U3RXREG;          //read it
                     U3TXREG=c;          //echo it back
-                    if(validOption(c)) menuOpt = c;
+                    if(validOption(c)) menuSelect = c;
                     if(c=='\r' || c=='\n')          //If that char was "A" then send a bunch of long stuff.
                     {
                         UARTprint("\n\r");
@@ -115,7 +115,7 @@ int main ( void )
                 break;
             case PROCESS_INPUT:
                 UARTprint("\n\r");
-                switch(menuOpt){
+                switch(menuSelect){
                     case '1':
                         if(heartbeat_en){
                             UARTprint("Heartbeat LED disabled\n\r");
@@ -135,10 +135,10 @@ int main ( void )
                             //TODO: make this into a function.. and use an array to store ADC counts
                             result_ready = false;
                             input_voltage = (float)adc_count * ADC_VREF / ADC_MAX_COUNT;
-                            sprintf(str, "RB1(AN3) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
+                            sprintf(str, "RA2(AN5) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
                             UARTprint(str);
                             input_voltage = (float)adc_count2 * ADC_VREF / ADC_MAX_COUNT;
-                            sprintf(str, "RB2(AN4) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count2, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
+                            sprintf(str, "RA3(AN6) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count2, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
                             UARTprint(str);
                             input_voltage = (float)adc_count3 * ADC_VREF / ADC_MAX_COUNT;
                             sprintf(str, "POT(AN14) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count3, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
@@ -151,21 +151,35 @@ int main ( void )
                         state = WAIT_RETURN;
                         break;
                     case '3':
-                        UARTprint("Input decimal number to write to DAC: ");
-                        //uint16_t dac_val = 0x0000; //Should be half
+                        UARTprint("Input voltage to write to DAC: ");
                         char dac[10];
                         getStr(dac, 10);
                         
-                        //uint16_t dac_int = atoi(dac);
-                        float dac_float = atof(dac);
-                        uint16_t dac_val = dac_float * 4096 / 3.3;
-                        if(!writeDAC(dac_val)){
-                            UARTprint("Error occurred while writing to DAC\n\r");
+                        if(isValidDecimal(dac)){
+                            float dac_float = atof(dac);
+                            uint16_t dac_val = dac_float * 4096 / 3.3;
+                            if(dac_float > 3.3){
+                                sprintf(str,"%fV is greater than the max value of 3.3V\n\r", dac_float);
+                                UARTprint(str);
+                            }
+                            else if(dac_float < 0){
+                                sprintf(str,"%fV is a negative number, cannot write to DAC\n\r", dac_float);
+                                UARTprint(str);
+                            }
+                            else{
+                                if(!writeDAC(dac_val)){
+                                    UARTprint("Error occurred while writing to DAC\n\r");
+                                }
+                                else{
+                                    sprintf(str,"Successfully wrote %fV to DAC\n\r", dac_float);
+                                    UARTprint(str);
+                                }
+                            }
                         }
                         else{
-                            sprintf(str,"Successfully wrote %f to DAC\n\r", dac_float);
-                            UARTprint(str);
+                            UARTprint("Value inputted is not a valid decimal\n\r");
                         }
+                        
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
@@ -222,7 +236,7 @@ int main ( void )
                     }
                     IFS1bits.U3RXIF=0;
                 }
-                menuOpt = '0';
+                menuSelect = '0';
                 break;
             default:
                 UARTprint("Invalid option selected\n\r");
