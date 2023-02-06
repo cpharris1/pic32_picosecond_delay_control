@@ -157,7 +157,7 @@ int main ( void )
                         
                         if(isValidDecimal(dac)){
                             float dac_float = atof(dac);
-                            uint16_t dac_val = dac_float * 4096 / 3.3;
+                            uint16_t dac_val = dac_float * 4095 / 3.3;
                             if(dac_float > 3.3){
                                 sprintf(str,"%fV is greater than the max value of 3.3V\n\r", dac_float);
                                 UARTprint(str);
@@ -206,7 +206,7 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '5':
+                    case 'z':
                         writeDAC(1860);
                         CORETIMER_DelayMs(2000);
                         for(uint16_t val = 1860; val < 2482; val++){

@@ -14,8 +14,8 @@ uint8_t writeDAC(uint16_t val){
     if (val > 4095) cnt = 4095;
     // Data 
     MCP4725TxData[0] = MCP4725_WRITE_DAC;
-    MCP4725TxData[1] = (cnt & 0x0ff0) >> 4;
-    MCP4725TxData[2] = (cnt & 0xf) << 4;
+    MCP4725TxData[1] = (cnt & 0xff00) >> 8;
+    MCP4725TxData[2] = (cnt & 0x00ff);
     //char buffer[50];
     //sprintf(buffer, "Data bytes: %x %x\n\r", MCP4725TxData[1], MCP4725TxData[2]);
     //UARTprint(buffer);
