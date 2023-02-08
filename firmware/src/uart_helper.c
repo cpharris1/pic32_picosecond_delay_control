@@ -30,7 +30,7 @@ void printMenu(void){
     UARTprint("2. Show Data from ADC\n\r");
     UARTprint("3. Write Voltage to I2C DAC\n\r");
     UARTprint("4. Show Temperature and Humidity Data\n\r");
-    UARTprint("5. DAC Sweep (1.5V-2.0V)\n\r");;
+    UARTprint("z. DAC Sweep (1.5V-2.0V)\n\r");;
     UARTprint("\n\rPlease input selection: ");
 }
 
