@@ -83,197 +83,197 @@ int main ( void )
     TRISBbits.TRISB13 = 1;
     
     // Initialize FSM
-    //char c='0';
-    //char menuSelect = '0';
+    char c='0';
+    char menuSelect = '0';
     state = PRINT_MENU;
-    //char str[100];
-    //uint32_t printData =0;
+    char str[100];
+    uint32_t printData =0;
 
     while ( true )
     {
         /* Maintain state machines of all polled MPLAB Harmony modules. */
         SYS_Tasks ( );
-        // ADC_ConversionStart();
-        // GPIO_PinSet(GPIO_PIN_RD0);
+        ADC_ConversionStart();
+        GPIO_PinSet(GPIO_PIN_RD0);
         
-        // switch(state){
-        //     case IDLE:
-        //         break;
-        //     case PRINT_MENU:
-        //         clearScreen();
-        //         printMenu();
-        //         state = AWAIT_INPUT;
-        //         break;
-        //     case AWAIT_INPUT:
-        //         if (IFS1bits.U3RXIF)    //If we have received a char,
-        //         {
-        //             c=U3RXREG;          //read it
-        //             U3TXREG=c;          //echo it back
-        //             if(validOption(c)) menuSelect = c;
-        //             if(c=='\r' || c=='\n')          //If that char was "A" then send a bunch of long stuff.
-        //             {
-        //                 UARTprint("\n\r");
-        //                 state = PROCESS_INPUT;
-        //             }
-        //             IFS1bits.U3RXIF=0;
-        //         }
-        //         break;
-        //     case PROCESS_INPUT:
-        //         UARTprint("\n\r");
-        //         switch(menuSelect){
-        //             case '1':
-        //                 if(heartbeat_en){
-        //                     UARTprint("Heartbeat LED disabled\n\r");
-        //                     heartbeat_en = 0;
-        //                 }
-        //                 else{
-        //                     UARTprint("Heartbeat LED enabled\n\r");
-        //                     heartbeat_en = 1;
-        //                 }
-        //                 printWaitReturn();
-        //                 state = WAIT_RETURN;
-        //                 break;
-        //             case '2':
-        //                 /* Wait till ADC conversion result is available */
-        //                 if(result_ready == true)
-        //                 {
-        //                     //TODO: make this into a function.. and use an array to store ADC counts
-        //                     result_ready = false;
-        //                     input_voltage = (float)adc_count * ADC_VREF / ADC_MAX_COUNT;
-        //                     sprintf(str, "RA2(AN5) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
-        //                     UARTprint(str);
-        //                     input_voltage = (float)adc_count2 * ADC_VREF / ADC_MAX_COUNT;
-        //                     sprintf(str, "RA3(AN6) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count2, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
-        //                     UARTprint(str);
-        //                     input_voltage = (float)adc_count3 * ADC_VREF / ADC_MAX_COUNT;
-        //                     sprintf(str, "POT(AN14) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count3, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
-        //                     UARTprint(str);
-        //                 }
-        //                 else{
-        //                     UARTprint("ERROR: ADC result not ready.\n\r");
-        //                 }
-        //                 printWaitReturn();
-        //                 state = WAIT_RETURN;
-        //                 break;
-        //             case '3':
-        //                 UARTprint("Input voltage to write to DAC: ");
-        //                 char dac[10];
-        //                 getStr(dac, 10);
+        switch(state){
+            case IDLE:
+                break;
+            case PRINT_MENU:
+                clearScreen();
+                printMenu();
+                state = AWAIT_INPUT;
+                break;
+            case AWAIT_INPUT:
+                if (IFS1bits.U3RXIF)    //If we have received a char,
+                {
+                    c=U3RXREG;          //read it
+                    U3TXREG=c;          //echo it back
+                    if(validOption(c)) menuSelect = c;
+                    if(c=='\r' || c=='\n')          //If that char was "A" then send a bunch of long stuff.
+                    {
+                        UARTprint("\n\r");
+                        state = PROCESS_INPUT;
+                    }
+                    IFS1bits.U3RXIF=0;
+                }
+                break;
+            case PROCESS_INPUT:
+                UARTprint("\n\r");
+                switch(menuSelect){
+                    case '1':
+                        if(heartbeat_en){
+                            UARTprint("Heartbeat LED disabled\n\r");
+                            heartbeat_en = 0;
+                        }
+                        else{
+                            UARTprint("Heartbeat LED enabled\n\r");
+                            heartbeat_en = 1;
+                        }
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case '2':
+                        /* Wait till ADC conversion result is available */
+                        if(result_ready == true)
+                        {
+                            //TODO: make this into a function.. and use an array to store ADC counts
+                            result_ready = false;
+                            input_voltage = (float)adc_count * ADC_VREF / ADC_MAX_COUNT;
+                            sprintf(str, "RA2(AN5) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
+                            UARTprint(str);
+                            input_voltage = (float)adc_count2 * ADC_VREF / ADC_MAX_COUNT;
+                            sprintf(str, "RA3(AN6) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count2, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
+                            UARTprint(str);
+                            input_voltage = (float)adc_count3 * ADC_VREF / ADC_MAX_COUNT;
+                            sprintf(str, "POT(AN14) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count3, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
+                            UARTprint(str);
+                        }
+                        else{
+                            UARTprint("ERROR: ADC result not ready.\n\r");
+                        }
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case '3':
+                        UARTprint("Input voltage to write to DAC: ");
+                        char dac[10];
+                        getStr(dac, 10);
                         
-        //                 if(isValidDecimal(dac)){
-        //                     float dac_float = atof(dac);
-        //                     uint16_t dac_val = dac_float * 4096 / 3.3;
-        //                     if(dac_float > 3.3){
-        //                         sprintf(str,"%fV is greater than the max value of 3.3V\n\r", dac_float);
-        //                         UARTprint(str);
-        //                     }
-        //                     else if(dac_float < 0){
-        //                         sprintf(str,"%fV is a negative number, cannot write to DAC\n\r", dac_float);
-        //                         UARTprint(str);
-        //                     }
-        //                     else{
-        //                         if(!writeDAC(dac_val)){
-        //                             UARTprint("Error occurred while writing to DAC\n\r");
-        //                         }
-        //                         else{
-        //                             sprintf(str,"Successfully wrote %fV to DAC\n\r", dac_float);
-        //                             UARTprint(str);
-        //                         }
-        //                     }
-        //                 }
-        //                 else{
-        //                     UARTprint("Value inputted is not a valid decimal\n\r");
-        //                 }
+                        if(isValidDecimal(dac)){
+                            float dac_float = atof(dac);
+                            uint16_t dac_val = dac_float * 4096 / 3.3;
+                            if(dac_float > 3.3){
+                                sprintf(str,"%fV is greater than the max value of 3.3V\n\r", dac_float);
+                                UARTprint(str);
+                            }
+                            else if(dac_float < 0){
+                                sprintf(str,"%fV is a negative number, cannot write to DAC\n\r", dac_float);
+                                UARTprint(str);
+                            }
+                            else{
+                                if(!writeDAC(dac_val)){
+                                    UARTprint("Error occurred while writing to DAC\n\r");
+                                }
+                                else{
+                                    sprintf(str,"Successfully wrote %fV to DAC\n\r", dac_float);
+                                    UARTprint(str);
+                                }
+                            }
+                        }
+                        else{
+                            UARTprint("Value inputted is not a valid decimal\n\r");
+                        }
                         
-        //                 printWaitReturn();
-        //                 state = WAIT_RETURN;
-        //                 break;
-        //             case '4':
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case '4':
                      
-        //                 StartSignal();
-        //                 CheckResponse();
-        //                 if(Check == 1){
-        //                     RH_byte1 = ReadData();
-        //                     RH_byte2 = ReadData();
-        //                     T_byte1 = ReadData();
-        //                     T_byte2 = ReadData();
-        //                     Sum = ReadData();
-        //                     if(Sum == ((RH_byte1+RH_byte2+T_byte1+T_byte2) & 0XFF)){
-        //                         RH = RH_byte1;
-        //                         RH_dec = RH_byte2;
-        //                         Temp = T_byte1;
-        //                         Temp_dec = T_byte2;
-        //                     }
-        //                 }
-        //                 sprintf(str, "Temperature is %d.%d degrees C \n\r", Temp,Temp_dec);
-        //                 UARTprint(str);
-        //                 sprintf(str, "Humidity is %d.%d %%RH \n\r", RH, RH_dec);
-        //                 UARTprint(str);
+                        StartSignal();
+                        CheckResponse();
+                        if(Check == 1){
+                            RH_byte1 = ReadData();
+                            RH_byte2 = ReadData();
+                            T_byte1 = ReadData();
+                            T_byte2 = ReadData();
+                            Sum = ReadData();
+                            if(Sum == ((RH_byte1+RH_byte2+T_byte1+T_byte2) & 0XFF)){
+                                RH = RH_byte1;
+                                RH_dec = RH_byte2;
+                                Temp = T_byte1;
+                                Temp_dec = T_byte2;
+                            }
+                        }
+                        sprintf(str, "Temperature is %d.%d degrees C \n\r", Temp,Temp_dec);
+                        UARTprint(str);
+                        sprintf(str, "Humidity is %d.%d %%RH \n\r", RH, RH_dec);
+                        UARTprint(str);
                         
-        //                 printWaitReturn();
-        //                 state = WAIT_RETURN;
-        //                 break;
-        //             case '5':
-        //                 writeDAC(1860);
-        //                 CORETIMER_DelayMs(2000);
-        //                 for(uint16_t val = 1860; val < 2482; val++){
-        //                     writeDAC(val);
-        //                     CORETIMER_DelayMs(800);
-        //                 }
-        //                 printWaitReturn();
-        //                 state = WAIT_RETURN;
-        //                 break;
-        //             case '6':
-        //                 UARTprint("Temp/Humid Data History\n\r");
-        //                 UARTprint("i,C,RH\n\r");
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case '5':
+                        writeDAC(1860);
+                        CORETIMER_DelayMs(2000);
+                        for(uint16_t val = 1860; val < 2482; val++){
+                            writeDAC(val);
+                            CORETIMER_DelayMs(800);
+                        }
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case '6':
+                        UARTprint("Temp/Humid Data History\n\r");
+                        UARTprint("i,C,RH\n\r");
                         
-        //                 if(dataCompCount==(ASIZE-1) && !flag_full){
-        //                     flag_full=1;
-        //                     sprintf(str, "Array is full, flag_full = %d\n\r",flag_full);
-        //                     UARTprint(str);
-        //                 }
-        //                 if(flag_full==1){
-        //                     //sprintf(str, "Back end printing, flag_full = %d\n\r",flag_full);
-        //                     //UARTprint(str);
-        //                     for(printData=dataCompCount;printData<ASIZE;printData++){
-        //                         sprintf(str, "%d %d.%d %d.%d\n\r", printData,T[printData],Tdec[printData],RHa[printData],RHdec[printData]);
-        //                         UARTprint(str);
-        //                     }
-        //                 }
-        //                 for(printData=0;printData<dataCompCount;printData++){
-        //                     sprintf(str, "%d %d.%d %d.%d\n\r", printData,T[printData],Tdec[printData],RHa[printData],RHdec[printData]);
-        //                     UARTprint(str);
-        //                 }
-        //                 printWaitReturn();
-        //                 state = WAIT_RETURN;
-        //                 break;
-        //             default:
-        //                 UARTprint("Invalid option selected\n\r");
-        //                 printWaitReturn();
-        //                 state = WAIT_RETURN;
-        //                 break;
-        //         }
+                        if(dataCompCount==(ASIZE-1) && !flag_full){
+                            flag_full=1;
+                            sprintf(str, "Array is full, flag_full = %d\n\r",flag_full);
+                            UARTprint(str);
+                        }
+                        if(flag_full==1){
+                            //sprintf(str, "Back end printing, flag_full = %d\n\r",flag_full);
+                            //UARTprint(str);
+                            for(printData=dataCompCount;printData<ASIZE;printData++){
+                                sprintf(str, "%d %d.%d %d.%d\n\r", printData,T[printData],Tdec[printData],RHa[printData],RHdec[printData]);
+                                UARTprint(str);
+                            }
+                        }
+                        for(printData=0;printData<dataCompCount;printData++){
+                            sprintf(str, "%d %d.%d %d.%d\n\r", printData,T[printData],Tdec[printData],RHa[printData],RHdec[printData]);
+                            UARTprint(str);
+                        }
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    default:
+                        UARTprint("Invalid option selected\n\r");
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                }
                 
-        //         break;
-        //     case WAIT_RETURN:
-        //         if (IFS1bits.U3RXIF)    //If we have received a char,
-        //         {
-        //             c=U3RXREG;          //read it
-        //             U3TXREG=c;          //echo it back
-        //             if(c=='\r' || c=='\n')          //If that char was "A" then send a bunch of long stuff.
-        //             {
-        //                 UARTprint("\n\r");
-        //                 state = PRINT_MENU;
-        //             }
-        //             IFS1bits.U3RXIF=0;
-        //         }
-        //         menuSelect = '0';
-        //         break;
-        //     default:
-        //         UARTprint("Invalid option selected\n\r");
-        //         printWaitReturn();
-        //         state = WAIT_RETURN;
-        // }                    
+                break;
+            case WAIT_RETURN:
+                if (IFS1bits.U3RXIF)    //If we have received a char,
+                {
+                    c=U3RXREG;          //read it
+                    U3TXREG=c;          //echo it back
+                    if(c=='\r' || c=='\n')          //If that char was "A" then send a bunch of long stuff.
+                    {
+                        UARTprint("\n\r");
+                        state = PRINT_MENU;
+                    }
+                    IFS1bits.U3RXIF=0;
+                }
+                menuSelect = '0';
+                break;
+            default:
+                UARTprint("Invalid option selected\n\r");
+                printWaitReturn();
+                state = WAIT_RETURN;
+        }                    
        
     }
 
