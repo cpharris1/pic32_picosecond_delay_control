@@ -34,13 +34,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: null
-- generatedChecksum: BC3F290F52DBD08EADA30634C45E5A67
+- generatedChecksum: 7BEE8EE093930707AA16C382D9F2F565
   logicalPath: config/default/peripheral/adc
   name: plib_adc.c
   physicalPath: peripheral/adc
   security: NON_SECURE
   type: SOURCE
-  userChecksum: BC3F290F52DBD08EADA30634C45E5A67
+  userChecksum: 7BEE8EE093930707AA16C382D9F2F565
 - generatedChecksum: 240958B7D89740CACE01A6311D26890E
   logicalPath: config/default/peripheral/cdac
   name: plib_cdac1.c

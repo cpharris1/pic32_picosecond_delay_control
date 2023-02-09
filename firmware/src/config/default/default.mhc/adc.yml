@@ -37,7 +37,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: '2'}
+        attributes: {value: '3'}
   - type: Boolean
     attributes: {id: AD1CSSL__CSSL_0}
     children:
@@ -104,7 +104,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: 'true'}
+        attributes: {value: 'false'}
   - type: Boolean
     attributes: {id: AD1CSSL__CSSL_15}
     children:
@@ -114,6 +114,10 @@ children:
         attributes: {id: visible}
         children:
         - {type: Value, value: 'true'}
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'true'}
   - type: Boolean
     attributes: {id: AD1CSSL__CSSL_16}
     children:
@@ -162,7 +166,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: 'false'}
+        attributes: {value: 'true'}
   - type: Boolean
     attributes: {id: AD1CSSL__CSSL_20}
     children:
@@ -250,7 +254,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: 'true'}
+        attributes: {value: 'false'}
   - type: Boolean
     attributes: {id: AD1CSSL__CSSL_7}
     children:
@@ -278,6 +282,10 @@ children:
         attributes: {id: visible}
         children:
         - {type: Value, value: 'true'}
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'true'}
   - type: Hex
     attributes: {id: ADC_AD1CHS}
     children:
@@ -298,14 +306,14 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: adc, value: '1032'}
+        attributes: {id: adc, value: '1036'}
   - type: Hex
     attributes: {id: ADC_AD1CSSL}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: adc, value: '16480'}
+        attributes: {id: adc, value: '33316'}
   - type: Boolean
     attributes: {id: ADC_INTERRUPT}
     children:
