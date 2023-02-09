@@ -62,6 +62,15 @@
 // *****************************************************************************
 
 
+/*** Macros for NS_D2 pin ***/
+#define NS_D2_Set()               (LATASET = (1<<7))
+#define NS_D2_Clear()             (LATACLR = (1<<7))
+#define NS_D2_Toggle()            (LATAINV= (1<<7))
+#define NS_D2_OutputEnable()      (TRISACLR = (1<<7))
+#define NS_D2_InputEnable()       (TRISASET = (1<<7))
+#define NS_D2_Get()               ((PORTA >> 7) & 0x1)
+#define NS_D2_PIN                  GPIO_PIN_RA7
+
 /*** Macros for GPIO_RB15_CLICK_PWM pin ***/
 #define GPIO_RB15_CLICK_PWM_Set()               (LATBSET = (1<<15))
 #define GPIO_RB15_CLICK_PWM_Clear()             (LATBCLR = (1<<15))
@@ -70,6 +79,33 @@
 #define GPIO_RB15_CLICK_PWM_InputEnable()       (TRISBSET = (1<<15))
 #define GPIO_RB15_CLICK_PWM_Get()               ((PORTB >> 15) & 0x1)
 #define GPIO_RB15_CLICK_PWM_PIN                  GPIO_PIN_RB15
+
+/*** Macros for PS_D0 pin ***/
+#define PS_D0_Set()               (LATASET = (1<<13))
+#define PS_D0_Clear()             (LATACLR = (1<<13))
+#define PS_D0_Toggle()            (LATAINV= (1<<13))
+#define PS_D0_OutputEnable()      (TRISACLR = (1<<13))
+#define PS_D0_InputEnable()       (TRISASET = (1<<13))
+#define PS_D0_Get()               ((PORTA >> 13) & 0x1)
+#define PS_D0_PIN                  GPIO_PIN_RA13
+
+/*** Macros for NS_D7 pin ***/
+#define NS_D7_Set()               (LATASET = (1<<12))
+#define NS_D7_Clear()             (LATACLR = (1<<12))
+#define NS_D7_Toggle()            (LATAINV= (1<<12))
+#define NS_D7_OutputEnable()      (TRISACLR = (1<<12))
+#define NS_D7_InputEnable()       (TRISASET = (1<<12))
+#define NS_D7_Get()               ((PORTA >> 12) & 0x1)
+#define NS_D7_PIN                  GPIO_PIN_RA12
+
+/*** Macros for NS_D6 pin ***/
+#define NS_D6_Set()               (LATASET = (1<<11))
+#define NS_D6_Clear()             (LATACLR = (1<<11))
+#define NS_D6_Toggle()            (LATAINV= (1<<11))
+#define NS_D6_OutputEnable()      (TRISACLR = (1<<11))
+#define NS_D6_InputEnable()       (TRISASET = (1<<11))
+#define NS_D6_Get()               ((PORTA >> 11) & 0x1)
+#define NS_D6_PIN                  GPIO_PIN_RA11
 
 /*** Macros for GPIO_RB1_CLICK_INT pin ***/
 #define GPIO_RB1_CLICK_INT_Set()               (LATBSET = (1<<1))
@@ -89,9 +125,144 @@
 #define GPIO_RB2_CLICK_CS_Get()               ((PORTB >> 2) & 0x1)
 #define GPIO_RB2_CLICK_CS_PIN                  GPIO_PIN_RB2
 
+/*** Macros for PS_D3 pin ***/
+#define PS_D3_Set()               (LATBSET = (1<<3))
+#define PS_D3_Clear()             (LATBCLR = (1<<3))
+#define PS_D3_Toggle()            (LATBINV= (1<<3))
+#define PS_D3_OutputEnable()      (TRISBCLR = (1<<3))
+#define PS_D3_InputEnable()       (TRISBSET = (1<<3))
+#define PS_D3_Get()               ((PORTB >> 3) & 0x1)
+#define PS_D3_PIN                  GPIO_PIN_RB3
+
+/*** Macros for PS_D6 pin ***/
+#define PS_D6_Set()               (LATCSET = (1<<0))
+#define PS_D6_Clear()             (LATCCLR = (1<<0))
+#define PS_D6_Toggle()            (LATCINV= (1<<0))
+#define PS_D6_OutputEnable()      (TRISCCLR = (1<<0))
+#define PS_D6_InputEnable()       (TRISCSET = (1<<0))
+#define PS_D6_Get()               ((PORTC >> 0) & 0x1)
+#define PS_D6_PIN                  GPIO_PIN_RC0
+
+/*** Macros for PS_D7 pin ***/
+#define PS_D7_Set()               (LATCSET = (1<<1))
+#define PS_D7_Clear()             (LATCCLR = (1<<1))
+#define PS_D7_Toggle()            (LATCINV= (1<<1))
+#define PS_D7_OutputEnable()      (TRISCCLR = (1<<1))
+#define PS_D7_InputEnable()       (TRISCSET = (1<<1))
+#define PS_D7_Get()               ((PORTC >> 1) & 0x1)
+#define PS_D7_PIN                  GPIO_PIN_RC1
+
+/*** Macros for PS_D8 pin ***/
+#define PS_D8_Set()               (LATCSET = (1<<11))
+#define PS_D8_Clear()             (LATCCLR = (1<<11))
+#define PS_D8_Toggle()            (LATCINV= (1<<11))
+#define PS_D8_OutputEnable()      (TRISCCLR = (1<<11))
+#define PS_D8_InputEnable()       (TRISCSET = (1<<11))
+#define PS_D8_Get()               ((PORTC >> 11) & 0x1)
+#define PS_D8_PIN                  GPIO_PIN_RC11
+
+/*** Macros for NS_D0 pin ***/
+#define NS_D0_Set()               (LATASET = (1<<3))
+#define NS_D0_Clear()             (LATACLR = (1<<3))
+#define NS_D0_Toggle()            (LATAINV= (1<<3))
+#define NS_D0_OutputEnable()      (TRISACLR = (1<<3))
+#define NS_D0_InputEnable()       (TRISASET = (1<<3))
+#define NS_D0_Get()               ((PORTA >> 3) & 0x1)
+#define NS_D0_PIN                  GPIO_PIN_RA3
+
+/*** Macros for NS_D3 pin ***/
+#define NS_D3_Set()               (LATASET = (1<<8))
+#define NS_D3_Clear()             (LATACLR = (1<<8))
+#define NS_D3_Toggle()            (LATAINV= (1<<8))
+#define NS_D3_OutputEnable()      (TRISACLR = (1<<8))
+#define NS_D3_InputEnable()       (TRISASET = (1<<8))
+#define NS_D3_Get()               ((PORTA >> 8) & 0x1)
+#define NS_D3_PIN                  GPIO_PIN_RA8
+
+/*** Macros for NS_D4 pin ***/
+#define NS_D4_Set()               (LATASET = (1<<9))
+#define NS_D4_Clear()             (LATACLR = (1<<9))
+#define NS_D4_Toggle()            (LATAINV= (1<<9))
+#define NS_D4_OutputEnable()      (TRISACLR = (1<<9))
+#define NS_D4_InputEnable()       (TRISASET = (1<<9))
+#define NS_D4_Get()               ((PORTA >> 9) & 0x1)
+#define NS_D4_PIN                  GPIO_PIN_RA9
+
+/*** Macros for PS_D9 pin ***/
+#define PS_D9_Set()               (LATCSET = (1<<12))
+#define PS_D9_Clear()             (LATCCLR = (1<<12))
+#define PS_D9_Toggle()            (LATCINV= (1<<12))
+#define PS_D9_OutputEnable()      (TRISCCLR = (1<<12))
+#define PS_D9_InputEnable()       (TRISCSET = (1<<12))
+#define PS_D9_Get()               ((PORTC >> 12) & 0x1)
+#define PS_D9_PIN                  GPIO_PIN_RC12
+
+/*** Macros for PS_D10 pin ***/
+#define PS_D10_Set()               (LATCSET = (1<<14))
+#define PS_D10_Clear()             (LATCCLR = (1<<14))
+#define PS_D10_Toggle()            (LATCINV= (1<<14))
+#define PS_D10_OutputEnable()      (TRISCCLR = (1<<14))
+#define PS_D10_InputEnable()       (TRISCSET = (1<<14))
+#define PS_D10_Get()               ((PORTC >> 14) & 0x1)
+#define PS_D10_PIN                  GPIO_PIN_RC14
+
+/*** Macros for PS_D4 pin ***/
+#define PS_D4_Set()               (LATBSET = (1<<6))
+#define PS_D4_Clear()             (LATBCLR = (1<<6))
+#define PS_D4_Toggle()            (LATBINV= (1<<6))
+#define PS_D4_OutputEnable()      (TRISBCLR = (1<<6))
+#define PS_D4_InputEnable()       (TRISBSET = (1<<6))
+#define PS_D4_Get()               ((PORTB >> 6) & 0x1)
+#define PS_D4_PIN                  GPIO_PIN_RB6
+
+/*** Macros for PS_D5 pin ***/
+#define PS_D5_Set()               (LATBSET = (1<<8))
+#define PS_D5_Clear()             (LATBCLR = (1<<8))
+#define PS_D5_Toggle()            (LATBINV= (1<<8))
+#define PS_D5_OutputEnable()      (TRISBCLR = (1<<8))
+#define PS_D5_InputEnable()       (TRISBSET = (1<<8))
+#define PS_D5_Get()               ((PORTB >> 8) & 0x1)
+#define PS_D5_PIN                  GPIO_PIN_RB8
+
 /*** Macros for POT pin ***/
 #define POT_Get()               ((PORTC >> 8) & 0x1)
 #define POT_PIN                  GPIO_PIN_RC8
+
+/*** Macros for NS_D1 pin ***/
+#define NS_D1_Set()               (LATASET = (1<<5))
+#define NS_D1_Clear()             (LATACLR = (1<<5))
+#define NS_D1_Toggle()            (LATAINV= (1<<5))
+#define NS_D1_OutputEnable()      (TRISACLR = (1<<5))
+#define NS_D1_InputEnable()       (TRISASET = (1<<5))
+#define NS_D1_Get()               ((PORTA >> 5) & 0x1)
+#define NS_D1_PIN                  GPIO_PIN_RA5
+
+/*** Macros for PS_D2 pin ***/
+#define PS_D2_Set()               (LATASET = (1<<15))
+#define PS_D2_Clear()             (LATACLR = (1<<15))
+#define PS_D2_Toggle()            (LATAINV= (1<<15))
+#define PS_D2_OutputEnable()      (TRISACLR = (1<<15))
+#define PS_D2_InputEnable()       (TRISASET = (1<<15))
+#define PS_D2_Get()               ((PORTA >> 15) & 0x1)
+#define PS_D2_PIN                  GPIO_PIN_RA15
+
+/*** Macros for PS_D1 pin ***/
+#define PS_D1_Set()               (LATASET = (1<<14))
+#define PS_D1_Clear()             (LATACLR = (1<<14))
+#define PS_D1_Toggle()            (LATAINV= (1<<14))
+#define PS_D1_OutputEnable()      (TRISACLR = (1<<14))
+#define PS_D1_InputEnable()       (TRISASET = (1<<14))
+#define PS_D1_Get()               ((PORTA >> 14) & 0x1)
+#define PS_D1_PIN                  GPIO_PIN_RA14
+
+/*** Macros for NS_D5 pin ***/
+#define NS_D5_Set()               (LATASET = (1<<10))
+#define NS_D5_Clear()             (LATACLR = (1<<10))
+#define NS_D5_Toggle()            (LATAINV= (1<<10))
+#define NS_D5_OutputEnable()      (TRISACLR = (1<<10))
+#define NS_D5_InputEnable()       (TRISASET = (1<<10))
+#define NS_D5_Get()               ((PORTA >> 10) & 0x1)
+#define NS_D5_PIN                  GPIO_PIN_RA10
 
 
 // *****************************************************************************

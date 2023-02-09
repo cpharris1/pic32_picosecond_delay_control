@@ -31,6 +31,7 @@
 #include "dac.h"
 #include "adc.h"
 #include "dht11.h"
+#include "delay.h"
 
 uint8_t state;
 enum {
@@ -49,7 +50,7 @@ void TIMER1_InterruptSvcRoutine(uint32_t status, uintptr_t context)
 }
 
 bool validOption(char opt){
-    return opt >= '1' && opt <= '5';
+    return ((opt >= '1' && opt <= '8') || opt == 'z');
 }
 
 //Below is for the Temp/Humid Sensor (DHT11)
@@ -162,6 +163,24 @@ int main ( void )
                         UARTprint(str);
                         sprintf(str, "Humidity is %d %%RH \n\r", RH);
                         UARTprint(str);
+                        
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case '7':
+                        UARTprint("Input nanosecond delay: ");
+                        char ns[10];
+                        getStr(ns, 10);
+                        set_ns_delay(ns);
+                        
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case '8':
+                        UARTprint("Input picosecond delay: ");
+                        char ps[10];
+                        getStr(ps, 10);
+                        set_ps_delay(ps);
                         
                         printWaitReturn();
                         state = WAIT_RETURN;
