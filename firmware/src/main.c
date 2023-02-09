@@ -129,24 +129,7 @@ int main ( void )
                         state = WAIT_RETURN;
                         break;
                     case '2':
-                        /* Wait till ADC conversion result is available */
-                        if(result_ready == true)
-                        {
-                            //TODO: make this into a function.. and use an array to store ADC counts
-                            result_ready = false;
-                            input_voltage = (float)adc_count * ADC_VREF / ADC_MAX_COUNT;
-                            sprintf(str, "RA2(AN5) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
-                            UARTprint(str);
-                            input_voltage = (float)adc_count2 * ADC_VREF / ADC_MAX_COUNT;
-                            sprintf(str, "RA3(AN6) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count2, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
-                            UARTprint(str);
-                            input_voltage = (float)adc_count3 * ADC_VREF / ADC_MAX_COUNT;
-                            sprintf(str, "POT(AN14) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count3, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
-                            UARTprint(str);
-                        }
-                        else{
-                            UARTprint("ERROR: ADC result not ready.\n\r");
-                        }
+                        get_ADC();
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
@@ -155,30 +138,7 @@ int main ( void )
                         char dac[10];
                         getStr(dac, 10);
                         
-                        if(isValidDecimal(dac)){
-                            float dac_float = atof(dac);
-                            uint16_t dac_val = dac_float * 4095 / 3.3;
-                            if(dac_float > 3.3){
-                                sprintf(str,"%fV is greater than the max value of 3.3V\n\r", dac_float);
-                                UARTprint(str);
-                            }
-                            else if(dac_float < 0){
-                                sprintf(str,"%fV is a negative number, cannot write to DAC\n\r", dac_float);
-                                UARTprint(str);
-                            }
-                            else{
-                                if(!writeDAC(dac_val)){
-                                    UARTprint("Error occurred while writing to DAC\n\r");
-                                }
-                                else{
-                                    sprintf(str,"Successfully wrote %fV to DAC\n\r", dac_float);
-                                    UARTprint(str);
-                                }
-                            }
-                        }
-                        else{
-                            UARTprint("Value inputted is not a valid decimal\n\r");
-                        }
+                        write_voltage_DAC(dac);
                         
                         printWaitReturn();
                         state = WAIT_RETURN;
@@ -208,6 +168,7 @@ int main ( void )
                         break;
                     case 'z':
                         writeDAC(1860);
+                        // configure MM to sample every 800ms
                         CORETIMER_DelayMs(2000);
                         for(uint16_t val = 1860; val < 2482; val++){
                             writeDAC(val);
