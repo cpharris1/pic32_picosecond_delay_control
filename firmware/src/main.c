@@ -50,7 +50,7 @@ void TIMER1_InterruptSvcRoutine(uint32_t status, uintptr_t context)
 }
 
 bool validOption(char opt){
-    return ((opt >= '1' && opt <= '8') || opt == 'z');
+    return ((opt >= '1' && opt <= '7') || (opt >= 'w' && opt <= 'z'));
 }
 
 //Below is for the Temp/Humid Sensor (DHT11)
@@ -98,6 +98,7 @@ int main ( void )
             case PRINT_MENU:
                 clearScreen();
                 printMenu();
+                lock_delay_chips(); // we don't want to accidentally change delay config
                 state = AWAIT_INPUT;
                 break;
             case AWAIT_INPUT:
@@ -117,7 +118,7 @@ int main ( void )
             case PROCESS_INPUT:
                 UARTprint("\n\r");
                 switch(menuSelect){
-                    case '1':
+                    case '6':
                         if(heartbeat_en){
                             UARTprint("Heartbeat LED disabled\n\r");
                             heartbeat_en = 0;
@@ -129,12 +130,12 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '2':
+                    case '7':
                         get_ADC();
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '3':
+                    case 'w':
                         UARTprint("Input voltage to write to DAC: ");
                         char dac[10];
                         getStr(dac, 10);
@@ -167,8 +168,13 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '7':
-                        UARTprint("Input nanosecond delay: ");
+                    case '5':
+                        UARTprint("Placeholder for DHT11 History\n\r");
+                        
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                    case '1':
+                        UARTprint("Input nanosecond delay (0-200ns): ");
                         char ns[10];
                         getStr(ns, 10);
                         set_ns_delay(ns);
@@ -176,11 +182,44 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '8':
-                        UARTprint("Input picosecond delay: ");
+                    case '2':
+                        UARTprint("Input picosecond delay (0-999ps): ");
                         char ps[10];
                         getStr(ps, 10);
                         set_ps_delay(ps);
+                        
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case '3':
+                        UARTprint("Input total delay in nanoseconds with up to 3 decimal places for picosecond delay (0-200.000ns): ");
+                        char fd[10];
+                        getStr(fd, 10);
+                        
+                        set_full_delay(fd);
+                        
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case 'x':
+                        UARTprint("Sweeping 0-200ns\n\r");
+                        for(int i=0; i<=200; i++){
+                            char ns[10];
+                            sprintf(ns, "%d", i);
+                            set_ns_delay(ns);
+                            CORETIMER_DelayMs(100);
+                        }                      
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case 'y':
+                        UARTprint("Sweeping 0-999ps\n\r");
+                        for(int i=0; i<=999; i+=10){
+                            char ps[10];
+                            sprintf(ps, "%d", i);
+                            set_ps_delay(ps);
+                            CORETIMER_DelayMs(100);
+                        }   
                         
                         printWaitReturn();
                         state = WAIT_RETURN;

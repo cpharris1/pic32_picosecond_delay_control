@@ -5,6 +5,7 @@
 #include "definitions.h"                // SYS function prototypes
 #include "uart_helper.h"
 #include <ctype.h>
+#include "delay.h"
 
 void UART_PutC(char data){
     while(U3STAbits.UTXBF);
@@ -25,14 +26,23 @@ int UARTprint(char *str)
 }
 
 void printMenu(void){
-    UARTprint("PIC32 Picosecond Delay Control (v1.2)\n\r\n\r");
-    UARTprint("1. Enable/Disable Heartbeat LED\n\r");
-    UARTprint("2. Show Data from ADC\n\r");
-    UARTprint("3. Write Voltage to I2C DAC\n\r");
-    UARTprint("4. Show Temperature and Humidity Data\n\r");
-    UARTprint("7. Set nanosecond delay\n\r");
-    UARTprint("8. Set picosecond delay\n\r");
-    UARTprint("z. DAC Sweep (1.5V-2.0V)\n\r");;
+    UARTprint("PIC32 Picosecond Delay Control (v1.3)\n\r\n\r");
+    print_delay();
+    UARTprint("\n\r");
+    
+    UARTprint("Menu Options:\n\r");
+    UARTprint("1. Set nanosecond delay (0-200ns)\n\r");
+    UARTprint("2. Set picosecond delay (0-999ps)\n\r");
+    UARTprint("3. Set total delay (0-200.000ns)\n\r");
+    UARTprint("4. Show Current Temperature and Humidity Data\n\r");
+    UARTprint("5. Show Temp and Humidity History\n\r");
+    UARTprint("6. Enable/Disable Heartbeat LED\n\r");
+    UARTprint("7. Show Data from ADC\n\r");
+    UARTprint("\n\rDemo and Debug Features:\n\r");
+    UARTprint("w. Manually set FTUNE voltage\n\r");
+    UARTprint("x. Sweep nanosecond delay (0-200)\n\r");
+    UARTprint("y. Sweep picosecond delay (0-999)\n\r");
+    UARTprint("z. Sweep FTUNE DAC voltages(1.5V-2.0V)\n\r");;
     UARTprint("\n\rPlease input selection: ");
 }
 
@@ -86,4 +96,11 @@ uint8_t isValidDecimal(char* str){
     }
     if(decimalCnt>1) return 0;
     return 1;
+}
+
+uint8_t hasDecimal(char* str){
+    for(int i=0; i<strlen(str); i++){
+        if(str[i] == '.') return 1;
+    }
+    return 0;
 }
