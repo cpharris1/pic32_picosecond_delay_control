@@ -327,6 +327,13 @@ children:
       - type: User
         attributes: {value: DIGITAL}
   - type: String
+    attributes: {id: BSP_PIN_34_FUNCTION_NAME}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: DHT11}
+  - type: String
     attributes: {id: BSP_PIN_35_MODE}
     children:
     - type: Values
