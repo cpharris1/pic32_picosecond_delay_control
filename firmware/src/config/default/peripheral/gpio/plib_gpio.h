@@ -62,6 +62,15 @@
 // *****************************************************************************
 
 
+/*** Macros for DELAY_D2 pin ***/
+#define DELAY_D2_Set()               (LATASET = (1<<7))
+#define DELAY_D2_Clear()             (LATACLR = (1<<7))
+#define DELAY_D2_Toggle()            (LATAINV= (1<<7))
+#define DELAY_D2_OutputEnable()      (TRISACLR = (1<<7))
+#define DELAY_D2_InputEnable()       (TRISASET = (1<<7))
+#define DELAY_D2_Get()               ((PORTA >> 7) & 0x1)
+#define DELAY_D2_PIN                  GPIO_PIN_RA7
+
 /*** Macros for GPIO_RB15_CLICK_PWM pin ***/
 #define GPIO_RB15_CLICK_PWM_Set()               (LATBSET = (1<<15))
 #define GPIO_RB15_CLICK_PWM_Clear()             (LATBCLR = (1<<15))
@@ -70,6 +79,33 @@
 #define GPIO_RB15_CLICK_PWM_InputEnable()       (TRISBSET = (1<<15))
 #define GPIO_RB15_CLICK_PWM_Get()               ((PORTB >> 15) & 0x1)
 #define GPIO_RB15_CLICK_PWM_PIN                  GPIO_PIN_RB15
+
+/*** Macros for DELAY_D8 pin ***/
+#define DELAY_D8_Set()               (LATASET = (1<<13))
+#define DELAY_D8_Clear()             (LATACLR = (1<<13))
+#define DELAY_D8_Toggle()            (LATAINV= (1<<13))
+#define DELAY_D8_OutputEnable()      (TRISACLR = (1<<13))
+#define DELAY_D8_InputEnable()       (TRISASET = (1<<13))
+#define DELAY_D8_Get()               ((PORTA >> 13) & 0x1)
+#define DELAY_D8_PIN                  GPIO_PIN_RA13
+
+/*** Macros for DELAY_D7 pin ***/
+#define DELAY_D7_Set()               (LATASET = (1<<12))
+#define DELAY_D7_Clear()             (LATACLR = (1<<12))
+#define DELAY_D7_Toggle()            (LATAINV= (1<<12))
+#define DELAY_D7_OutputEnable()      (TRISACLR = (1<<12))
+#define DELAY_D7_InputEnable()       (TRISASET = (1<<12))
+#define DELAY_D7_Get()               ((PORTA >> 12) & 0x1)
+#define DELAY_D7_PIN                  GPIO_PIN_RA12
+
+/*** Macros for DELAY_D6 pin ***/
+#define DELAY_D6_Set()               (LATASET = (1<<11))
+#define DELAY_D6_Clear()             (LATACLR = (1<<11))
+#define DELAY_D6_Toggle()            (LATAINV= (1<<11))
+#define DELAY_D6_OutputEnable()      (TRISACLR = (1<<11))
+#define DELAY_D6_InputEnable()       (TRISASET = (1<<11))
+#define DELAY_D6_Get()               ((PORTA >> 11) & 0x1)
+#define DELAY_D6_PIN                  GPIO_PIN_RA11
 
 /*** Macros for GPIO_RB1_CLICK_INT pin ***/
 #define GPIO_RB1_CLICK_INT_Set()               (LATBSET = (1<<1))
@@ -89,9 +125,81 @@
 #define GPIO_RB2_CLICK_CS_Get()               ((PORTB >> 2) & 0x1)
 #define GPIO_RB2_CLICK_CS_PIN                  GPIO_PIN_RB2
 
+/*** Macros for NS_LATCH pin ***/
+#define NS_LATCH_Set()               (LATCSET = (1<<0))
+#define NS_LATCH_Clear()             (LATCCLR = (1<<0))
+#define NS_LATCH_Toggle()            (LATCINV= (1<<0))
+#define NS_LATCH_OutputEnable()      (TRISCCLR = (1<<0))
+#define NS_LATCH_InputEnable()       (TRISCSET = (1<<0))
+#define NS_LATCH_Get()               ((PORTC >> 0) & 0x1)
+#define NS_LATCH_PIN                  GPIO_PIN_RC0
+
+/*** Macros for PS_LATCH pin ***/
+#define PS_LATCH_Set()               (LATCSET = (1<<1))
+#define PS_LATCH_Clear()             (LATCCLR = (1<<1))
+#define PS_LATCH_Toggle()            (LATCINV= (1<<1))
+#define PS_LATCH_OutputEnable()      (TRISCCLR = (1<<1))
+#define PS_LATCH_InputEnable()       (TRISCSET = (1<<1))
+#define PS_LATCH_Get()               ((PORTC >> 1) & 0x1)
+#define PS_LATCH_PIN                  GPIO_PIN_RC1
+
+/*** Macros for DELAY_D0 pin ***/
+#define DELAY_D0_Set()               (LATASET = (1<<3))
+#define DELAY_D0_Clear()             (LATACLR = (1<<3))
+#define DELAY_D0_Toggle()            (LATAINV= (1<<3))
+#define DELAY_D0_OutputEnable()      (TRISACLR = (1<<3))
+#define DELAY_D0_InputEnable()       (TRISASET = (1<<3))
+#define DELAY_D0_Get()               ((PORTA >> 3) & 0x1)
+#define DELAY_D0_PIN                  GPIO_PIN_RA3
+
+/*** Macros for DELAY_D3 pin ***/
+#define DELAY_D3_Set()               (LATASET = (1<<8))
+#define DELAY_D3_Clear()             (LATACLR = (1<<8))
+#define DELAY_D3_Toggle()            (LATAINV= (1<<8))
+#define DELAY_D3_OutputEnable()      (TRISACLR = (1<<8))
+#define DELAY_D3_InputEnable()       (TRISASET = (1<<8))
+#define DELAY_D3_Get()               ((PORTA >> 8) & 0x1)
+#define DELAY_D3_PIN                  GPIO_PIN_RA8
+
+/*** Macros for DELAY_D4 pin ***/
+#define DELAY_D4_Set()               (LATASET = (1<<9))
+#define DELAY_D4_Clear()             (LATACLR = (1<<9))
+#define DELAY_D4_Toggle()            (LATAINV= (1<<9))
+#define DELAY_D4_OutputEnable()      (TRISACLR = (1<<9))
+#define DELAY_D4_InputEnable()       (TRISASET = (1<<9))
+#define DELAY_D4_Get()               ((PORTA >> 9) & 0x1)
+#define DELAY_D4_PIN                  GPIO_PIN_RA9
+
 /*** Macros for POT pin ***/
 #define POT_Get()               ((PORTC >> 8) & 0x1)
 #define POT_PIN                  GPIO_PIN_RC8
+
+/*** Macros for DELAY_D1 pin ***/
+#define DELAY_D1_Set()               (LATASET = (1<<5))
+#define DELAY_D1_Clear()             (LATACLR = (1<<5))
+#define DELAY_D1_Toggle()            (LATAINV= (1<<5))
+#define DELAY_D1_OutputEnable()      (TRISACLR = (1<<5))
+#define DELAY_D1_InputEnable()       (TRISASET = (1<<5))
+#define DELAY_D1_Get()               ((PORTA >> 5) & 0x1)
+#define DELAY_D1_PIN                  GPIO_PIN_RA5
+
+/*** Macros for DELAY_D9 pin ***/
+#define DELAY_D9_Set()               (LATASET = (1<<14))
+#define DELAY_D9_Clear()             (LATACLR = (1<<14))
+#define DELAY_D9_Toggle()            (LATAINV= (1<<14))
+#define DELAY_D9_OutputEnable()      (TRISACLR = (1<<14))
+#define DELAY_D9_InputEnable()       (TRISASET = (1<<14))
+#define DELAY_D9_Get()               ((PORTA >> 14) & 0x1)
+#define DELAY_D9_PIN                  GPIO_PIN_RA14
+
+/*** Macros for DELAY_D5 pin ***/
+#define DELAY_D5_Set()               (LATASET = (1<<10))
+#define DELAY_D5_Clear()             (LATACLR = (1<<10))
+#define DELAY_D5_Toggle()            (LATAINV= (1<<10))
+#define DELAY_D5_OutputEnable()      (TRISACLR = (1<<10))
+#define DELAY_D5_InputEnable()       (TRISASET = (1<<10))
+#define DELAY_D5_Get()               ((PORTA >> 10) & 0x1)
+#define DELAY_D5_PIN                  GPIO_PIN_RA10
 
 
 // *****************************************************************************
