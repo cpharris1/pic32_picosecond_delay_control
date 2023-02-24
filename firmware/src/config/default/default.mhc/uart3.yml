@@ -11,6 +11,15 @@ children:
       children:
       - type: Dynamic
         attributes: {id: uart3, value: '12'}
+  - type: Comment
+    attributes: {id: UART_BAUD_PER_ERROR_COMMENT}
+    children:
+    - type: Attributes
+      children:
+      - type: String
+        attributes: {id: text}
+        children:
+        - {type: Value, value: '*** Baud Error = 0.1597 % ***'}
   - type: KeyValueSet
     attributes: {id: UART_BRGH}
     children:

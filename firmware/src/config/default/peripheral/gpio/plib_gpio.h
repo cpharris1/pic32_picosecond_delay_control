@@ -107,6 +107,10 @@
 #define DELAY_D6_Get()               ((PORTA >> 11) & 0x1)
 #define DELAY_D6_PIN                  GPIO_PIN_RA11
 
+/*** Macros for FTUNE_ADC pin ***/
+#define FTUNE_ADC_Get()               ((PORTA >> 6) & 0x1)
+#define FTUNE_ADC_PIN                  GPIO_PIN_RA6
+
 /*** Macros for GPIO_RB1_CLICK_INT pin ***/
 #define GPIO_RB1_CLICK_INT_Set()               (LATBSET = (1<<1))
 #define GPIO_RB1_CLICK_INT_Clear()             (LATBCLR = (1<<1))
@@ -142,6 +146,10 @@
 #define PS_LATCH_InputEnable()       (TRISCSET = (1<<1))
 #define PS_LATCH_Get()               ((PORTC >> 1) & 0x1)
 #define PS_LATCH_PIN                  GPIO_PIN_RC1
+
+/*** Macros for EXTCLK_IN pin ***/
+#define EXTCLK_IN_Get()               ((PORTA >> 2) & 0x1)
+#define EXTCLK_IN_PIN                  GPIO_PIN_RA2
 
 /*** Macros for DELAY_D0 pin ***/
 #define DELAY_D0_Set()               (LATASET = (1<<3))
