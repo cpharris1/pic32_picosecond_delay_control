@@ -60,7 +60,7 @@ void ADC_Initialize(void)
     AD1CON3 = 0x1f04;
     AD1CHS = 0xe;
     /* Input Scan */
-    AD1CSS = 0x8224;
+    AD1CSS = 0x88204;
 
     /* Clear interrupt flag */
     IFS1CLR = _IFS1_AD1IF_MASK;
