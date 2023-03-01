@@ -34,13 +34,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: null
-- generatedChecksum: BC3F290F52DBD08EADA30634C45E5A67
+- generatedChecksum: E07354C9421A92A916AABF12C8A6B26C
   logicalPath: config/default/peripheral/adc
   name: plib_adc.c
   physicalPath: peripheral/adc
   security: NON_SECURE
   type: SOURCE
-  userChecksum: BC3F290F52DBD08EADA30634C45E5A67
+  userChecksum: E07354C9421A92A916AABF12C8A6B26C
 - generatedChecksum: 240958B7D89740CACE01A6311D26890E
   logicalPath: config/default/peripheral/cdac
   name: plib_cdac1.c
@@ -69,13 +69,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 363C0DEFA49233B45DC5CA78C08224F2
-- generatedChecksum: 8A1EE2B24344FF01C3BF06D6EAD9D14F
+- generatedChecksum: 8BF835EA7EA4706C76851EA378298AE4
   logicalPath: config/default/peripheral/gpio
   name: plib_gpio.c
   physicalPath: peripheral/gpio
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 8A1EE2B24344FF01C3BF06D6EAD9D14F
+  userChecksum: 8BF835EA7EA4706C76851EA378298AE4
 - generatedChecksum: 27EDCEAD50044B79B21C8B8A252BE616
   logicalPath: config/default/peripheral/i2c/master
   name: plib_i2c3_master.c
@@ -83,7 +83,7 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 27EDCEAD50044B79B21C8B8A252BE616
-- generatedChecksum: C6A93BE14F1DA62FAB7773EF52D7A76B
+- generatedChecksum: 4A6252E39497E0971206B06B4F329B86
   logicalPath: config/default/peripheral/tmr1
   name: plib_tmr1.c
   physicalPath: peripheral/tmr1
@@ -167,13 +167,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 471535DBA871A956FB7FAC6C66FCD8C1
-- generatedChecksum: 8E88B5145CC2E511F0B9FF0F39BCE867
+- generatedChecksum: 7B7FB843A98CF54B8C59C2D42B0AC21D
   logicalPath: config/default/peripheral/gpio
   name: plib_gpio.h
   physicalPath: peripheral/gpio
   security: NON_SECURE
   type: HEADER
-  userChecksum: 8E88B5145CC2E511F0B9FF0F39BCE867
+  userChecksum: 7B7FB843A98CF54B8C59C2D42B0AC21D
 - generatedChecksum: 39C12E1D89BC214A6BB7051C4E1C4312
   logicalPath: config/default/peripheral/i2c/master
   name: plib_i2c3_master.h

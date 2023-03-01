@@ -115,6 +115,8 @@
       <itemPath>../src/adc.h</itemPath>
       <itemPath>../src/dht11.h</itemPath>
       <itemPath>../src/dht11.c</itemPath>
+      <itemPath>../src/delay.c</itemPath>
+      <itemPath>../src/delay.h</itemPath>
     </logicalFolder>
     <logicalFolder name="src" displayName="src" projectFiles="true">
       <logicalFolder name="config" displayName="config" projectFiles="true">

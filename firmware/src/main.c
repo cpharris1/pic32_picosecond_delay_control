@@ -31,6 +31,7 @@
 #include "dac.h"
 #include "adc.h"
 #include "dht11.h"
+#include "delay.h"
 
 uint8_t state;
 enum {
@@ -53,7 +54,7 @@ void TIMER1_InterruptSvcRoutine(uint32_t status, uintptr_t context)
     
 
 bool validOption(char opt){
-    return opt >= '1' && opt <= '6';
+    return ((opt >= '1' && opt <= '7') || (opt >= 'w' && opt <= 'z'));
 }
 
 //Below is for the Temp/Humid Sensor (DHT11)
@@ -102,6 +103,7 @@ int main ( void )
             case PRINT_MENU:
                 clearScreen();
                 printMenu();
+                lock_delay_chips(); // we don't want to accidentally change delay config
                 state = AWAIT_INPUT;
                 break;
             case AWAIT_INPUT:
@@ -121,7 +123,7 @@ int main ( void )
             case PROCESS_INPUT:
                 UARTprint("\n\r");
                 switch(menuSelect){
-                    case '1':
+                    case '6':
                         if(heartbeat_en){
                             UARTprint("Heartbeat LED disabled\n\r");
                             heartbeat_en = 0;
@@ -133,57 +135,17 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '2':
-                        /* Wait till ADC conversion result is available */
-                        if(result_ready == true)
-                        {
-                            //TODO: make this into a function.. and use an array to store ADC counts
-                            result_ready = false;
-                            input_voltage = (float)adc_count * ADC_VREF / ADC_MAX_COUNT;
-                            sprintf(str, "RA2(AN5) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
-                            UARTprint(str);
-                            input_voltage = (float)adc_count2 * ADC_VREF / ADC_MAX_COUNT;
-                            sprintf(str, "RA3(AN6) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count2, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
-                            UARTprint(str);
-                            input_voltage = (float)adc_count3 * ADC_VREF / ADC_MAX_COUNT;
-                            sprintf(str, "POT(AN14) ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_count3, (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
-                            UARTprint(str);
-                        }
-                        else{
-                            UARTprint("ERROR: ADC result not ready.\n\r");
-                        }
+                    case '7':
+                        get_ADC();
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '3':
+                    case 'w':
                         UARTprint("Input voltage to write to DAC: ");
                         char dac[10];
                         getStr(dac, 10);
                         
-                        if(isValidDecimal(dac)){
-                            float dac_float = atof(dac);
-                            uint16_t dac_val = dac_float * 4096 / 3.3;
-                            if(dac_float > 3.3){
-                                sprintf(str,"%fV is greater than the max value of 3.3V\n\r", dac_float);
-                                UARTprint(str);
-                            }
-                            else if(dac_float < 0){
-                                sprintf(str,"%fV is a negative number, cannot write to DAC\n\r", dac_float);
-                                UARTprint(str);
-                            }
-                            else{
-                                if(!writeDAC(dac_val)){
-                                    UARTprint("Error occurred while writing to DAC\n\r");
-                                }
-                                else{
-                                    sprintf(str,"Successfully wrote %fV to DAC\n\r", dac_float);
-                                    UARTprint(str);
-                                }
-                            }
-                        }
-                        else{
-                            UARTprint("Value inputted is not a valid decimal\n\r");
-                        }
+                        write_voltage_DAC(dac);
                         
                         printWaitReturn();
                         state = WAIT_RETURN;
@@ -214,7 +176,64 @@ int main ( void )
                         state = WAIT_RETURN;
                         break;
                     case '5':
+                        UARTprint("Placeholder for DHT11 History\n\r");
+                        
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                    case '1':
+                        UARTprint("Input nanosecond delay (0-200ns): ");
+                        char ns[10];
+                        getStr(ns, 10);
+                        set_ns_delay(ns);
+                        
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case '2':
+                        UARTprint("Input picosecond delay (0-999ps): ");
+                        char ps[10];
+                        getStr(ps, 10);
+                        set_ps_delay(ps);
+                        
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case '3':
+                        UARTprint("Input total delay in nanoseconds with up to 3 decimal places for picosecond delay (0-200.000ns): ");
+                        char fd[10];
+                        getStr(fd, 10);
+                        
+                        set_full_delay(fd);
+                        
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case 'x':
+                        UARTprint("Sweeping 0-200ns\n\r");
+                        for(int i=0; i<=200; i++){
+                            char ns[10];
+                            sprintf(ns, "%d", i);
+                            set_ns_delay(ns);
+                            CORETIMER_DelayMs(100);
+                        }                      
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case 'y':
+                        UARTprint("Sweeping 0-999ps\n\r");
+                        for(int i=0; i<=999; i+=10){
+                            char ps[10];
+                            sprintf(ps, "%d", i);
+                            set_ps_delay(ps);
+                            CORETIMER_DelayMs(100);
+                        }   
+                        
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case 'z':
                         writeDAC(1860);
+                        // configure MM to sample every 800ms
                         CORETIMER_DelayMs(2000);
                         for(uint16_t val = 1860; val < 2482; val++){
                             writeDAC(val);
