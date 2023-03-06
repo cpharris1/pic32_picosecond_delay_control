@@ -7,7 +7,13 @@
 #include "uart_helper.h"
 
 unsigned char Check, T_byte1, T_byte2, RH_byte1, RH_byte2, Ch ;
-unsigned Temp, RH, Sum ;
+uint8_t Temp, RH, RH_dec, Temp_dec, Sum ;
+#define ASIZE 300 //array size
+#define PERIOD 30 //seconds, dont go below 1.5s
+uint8_t T[ASIZE],Tdec[ASIZE],RHa[ASIZE],RHdec[ASIZE];
+volatile uint32_t dataCount = 0;
+volatile uint32_t halfSec = 0;
+volatile uint8_t flag_full=0;
 
 void StartSignal(){
     GPIO_PinOutputEnable(GPIO_PIN_RD0);
@@ -41,3 +47,41 @@ char ReadData(){
     }
     return i;
  }
+
+void contData(){
+  uint8_t Sum2=0;
+    if(halfSec == PERIOD*2){ //Can't be less than 3 halfSec, 1 second is too fast
+        if(dataCount<ASIZE){
+            LED2_Toggle();
+            StartSignal();
+            CheckResponse();
+            if(Check == 1){
+                RH_byte1 = ReadData();
+                RH_byte2 = ReadData();
+                T_byte1 = ReadData();
+                T_byte2 = ReadData();
+                Sum = ReadData();
+                Sum2 = ((RH_byte1+RH_byte2+T_byte1+T_byte2) & 0XFF);
+                if(Sum == Sum2){
+                    RHa[dataCount] = RH_byte1;
+                    RHdec[dataCount] = RH_byte2;
+                    T[dataCount] = T_byte1;
+                    Tdec[dataCount] = T_byte2;
+                } 
+            }
+            //sprintf(strint, "%d,%d.%d,%d.%d\n\r", dataCount,T[dataCount],Tdec[dataCount],RHa[dataCount],RHdec[dataCount]);
+            //UARTprint(strint);
+            dataCount++;
+            if(dataCount==(ASIZE-1) && !flag_full){
+                flag_full=1;
+                //sprintf(strint, "Array is full, flag_full = %d\n\r",flag_full);
+                //UARTprint(strint);
+            }
+        }
+        if(dataCount==ASIZE){
+            dataCount=0;
+        }
+        halfSec = 0;
+    }
+    halfSec++;
+}
