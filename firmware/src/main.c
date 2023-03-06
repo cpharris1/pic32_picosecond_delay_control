@@ -42,14 +42,15 @@ enum {
      WAIT_RETURN,
 };
 
+volatile uint8_t dht11_flag=0;
+volatile uint8_t adc_flag=0;
 volatile uint8_t heartbeat_en=1;
 void TIMER1_InterruptSvcRoutine(uint32_t status, uintptr_t context)
 {
     if(heartbeat_en) LED1_Toggle();
     else LED1_Off();
-    
-    //contData();
-
+    dht11_flag=1;
+    adc_flag=1;
 }
     
 
@@ -65,6 +66,11 @@ bool validOption(char opt){
 // Section: Main Entry Point
 // *****************************************************************************
 // *****************************************************************************
+
+float three_voltage;
+float five_voltage;
+float twelve_voltage;
+float ftune_voltage;
 
 int main ( void )
 {
@@ -89,13 +95,23 @@ int main ( void )
     state = PRINT_MENU;
     char str[100];
     uint32_t printData =0;
+    uint32_t printADC =0;
 
     while ( true )
     {
         /* Maintain state machines of all polled MPLAB Harmony modules. */
         SYS_Tasks ( );
-        ADC_ConversionStart();
         GPIO_PinSet(GPIO_PIN_RD0);
+        
+        if(dht11_flag){
+            contData();
+            dht11_flag=0;
+        }
+        
+        if(adc_flag){
+            ADC_ConversionStart();
+            adc_flag=0;
+        }
         
         switch(state){
             case IDLE:
@@ -136,7 +152,26 @@ int main ( void )
                         state = WAIT_RETURN;
                         break;
                     case '7':
-                        get_ADC();
+                        UARTprint("Current ADC Data\n\r");
+                        //get_ADC(); 
+                        UARTprint("\n\rADC Data History\n\r");
+                        UARTprint("Samp 3.3V 5V 12V FTUNE\n\r");
+                        
+                        if(ADCi==(adc_ASIZE-1) && !adc_full){
+                            adc_full=1;
+                            sprintf(str, "Array is full, adc_full = %d\n\r",adc_full);
+                            UARTprint(str);
+                        }
+                        if(adc_full==1){
+                            for(printADC=ADCi;printADC<adc_ASIZE;printADC++){
+                                sprintf(str, "%d %.3f %.3f %.3f %.3f\n\r", printADC,thr_v[printADC],five_v[printADC],twelve_v[printADC],ftune[printADC]);
+                                UARTprint(str);    
+                            }
+                        }
+                        for(printADC=0;printADC<ADCi;printADC++){//this is the beginning of the array
+                            sprintf(str, "%d %.3f %.3f %.3f %.3f\n\r", printADC,thr_v[printADC],five_v[printADC],twelve_v[printADC],ftune[printADC]);
+                                UARTprint(str); 
+                        }
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
@@ -175,11 +210,6 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '5':
-                        UARTprint("Placeholder for DHT11 History\n\r");
-                        
-                        printWaitReturn();
-                        state = WAIT_RETURN;
                     case '1':
                         UARTprint("Input nanosecond delay (0-200ns): ");
                         char ns[10];
@@ -242,11 +272,11 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '6':
+                    case '5':
                         UARTprint("Temp/Humid Data History\n\r");
-                        UARTprint("i,C,RH\n\r");
+                        UARTprint("i C RH\n\r");
                         
-                        if(dataCompCount==(ASIZE-1) && !flag_full){
+                        if(dataCount==(ASIZE-1) && !flag_full){
                             flag_full=1;
                             sprintf(str, "Array is full, flag_full = %d\n\r",flag_full);
                             UARTprint(str);
@@ -254,12 +284,12 @@ int main ( void )
                         if(flag_full==1){
                             //sprintf(str, "Back end printing, flag_full = %d\n\r",flag_full);
                             //UARTprint(str);
-                            for(printData=dataCompCount;printData<ASIZE;printData++){
+                            for(printData=dataCount;printData<ASIZE;printData++){
                                 sprintf(str, "%d %d.%d %d.%d\n\r", printData,T[printData],Tdec[printData],RHa[printData],RHdec[printData]);
                                 UARTprint(str);
                             }
                         }
-                        for(printData=0;printData<dataCompCount;printData++){
+                        for(printData=0;printData<dataCount;printData++){
                             sprintf(str, "%d %d.%d %d.%d\n\r", printData,T[printData],Tdec[printData],RHa[printData],RHdec[printData]);
                             UARTprint(str);
                         }
@@ -271,6 +301,7 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
+                        
                 }
                 
                 break;

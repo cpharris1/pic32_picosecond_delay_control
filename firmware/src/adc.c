@@ -9,15 +9,45 @@
 uint16_t adc_arr[4];
 float input_voltage;
 volatile bool result_ready = false;
+#define adc_ASIZE 20 //array size
+#define adc_PERIOD 1.5 //seconds, dont go below 1.5s
+float thr_v[adc_ASIZE],five_v[adc_ASIZE],twelve_v[adc_ASIZE],ftune[adc_ASIZE];
+volatile uint32_t ADCi = 0;
+volatile uint32_t adc_halfSec = 0;
+volatile uint8_t adc_full=0;
 
 void ADC_ResultHandler(uintptr_t context)
 {
     /* Read the ADC result */
-    adc_arr[0] = ADC_ResultGet(ADC_RESULT_BUFFER_0);   //AN2
-    adc_arr[1] = ADC_ResultGet(ADC_RESULT_BUFFER_1);   //AN9
-    adc_arr[2] = ADC_ResultGet(ADC_RESULT_BUFFER_2);   //AN15
-    adc_arr[3] = ADC_ResultGet(ADC_RESULT_BUFFER_3);   //AN19
+    adc_arr[0] = ADC_ResultGet(ADC_RESULT_BUFFER_0);   //AN2 -- 3.3V
+    adc_arr[1] = ADC_ResultGet(ADC_RESULT_BUFFER_1);   //AN9 -- 5V
+    adc_arr[2] = ADC_ResultGet(ADC_RESULT_BUFFER_2);   //AN15 -- 12V
+    adc_arr[3] = ADC_ResultGet(ADC_RESULT_BUFFER_3);   //AN19 -- FTUNE
     result_ready = true;
+    
+    //char str_ADChist[100];
+    if(adc_halfSec == adc_PERIOD*2){ //Can't be less than 3 adc_halfSec, 1 second is too fast
+        if(ADCi<adc_ASIZE){
+            
+            
+            thr_v[ADCi]=(float)adc_arr[0] * ADC_VREF / ADC_MAX_COUNT;
+//            sprintf(str_ADChist, "ADC 3.3V Input Voltage = %f V \n\r",thr_v[ADCi]);
+//            UARTprint(str_ADChist);
+            five_v[ADCi]=((float)adc_arr[1] * ADC_VREF / ADC_MAX_COUNT)*(5.0/3.0);
+            twelve_v[ADCi]=((float)adc_arr[2] * ADC_VREF / ADC_MAX_COUNT)*(4.1/1.1);
+            ftune[ADCi]=(float)adc_arr[3] * ADC_VREF / ADC_MAX_COUNT;
+            
+            ADCi++;
+            if(ADCi==(adc_ASIZE-1) && !adc_full){
+                adc_full=1;
+            }
+        }
+        if(ADCi==adc_ASIZE){
+            ADCi=0;
+        }
+        adc_halfSec = 0;
+    }
+    adc_halfSec++;
 }
 
 void get_ADC(void){

@@ -8,13 +8,12 @@
 
 unsigned char Check, T_byte1, T_byte2, RH_byte1, RH_byte2, Ch ;
 uint8_t Temp, RH, RH_dec, Temp_dec, Sum ;
-#define ASIZE 300
+#define ASIZE 300 //array size
+#define PERIOD 30 //seconds, dont go below 1.5s
 uint8_t T[ASIZE],Tdec[ASIZE],RHa[ASIZE],RHdec[ASIZE];
 volatile uint32_t dataCount = 0;
 volatile uint32_t halfSec = 0;
-volatile uint32_t dataCompCount = 0;
 volatile uint8_t flag_full=0;
-//volatile uint8_t flag_timer=0;
 
 void StartSignal(){
     GPIO_PinOutputEnable(GPIO_PIN_RD0);
@@ -51,7 +50,7 @@ char ReadData(){
 
 void contData(){
   uint8_t Sum2=0;
-    if(halfSec == 20){ //Can't be less than 3 halfSec, 1 second is too fast
+    if(halfSec == PERIOD*2){ //Can't be less than 3 halfSec, 1 second is too fast
         if(dataCount<ASIZE){
             LED2_Toggle();
             StartSignal();
@@ -73,8 +72,7 @@ void contData(){
             //sprintf(strint, "%d,%d.%d,%d.%d\n\r", dataCount,T[dataCount],Tdec[dataCount],RHa[dataCount],RHdec[dataCount]);
             //UARTprint(strint);
             dataCount++;
-            dataCompCount=dataCount;
-            if(dataCompCount==(ASIZE-1) && !flag_full){
+            if(dataCount==(ASIZE-1) && !flag_full){
                 flag_full=1;
                 //sprintf(strint, "Array is full, flag_full = %d\n\r",flag_full);
                 //UARTprint(strint);

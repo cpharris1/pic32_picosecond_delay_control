@@ -14,7 +14,6 @@ extern uint8_t Temp, RH, RH_dec, Temp_dec, Sum ;
 extern uint8_t T[ASIZE],Tdec[ASIZE],RHa[ASIZE],RHdec[ASIZE];
 extern volatile uint32_t dataCount;
 extern volatile uint32_t halfSec;
-extern volatile uint32_t dataCompCount;
 extern volatile uint8_t flag_full;
 
 void StartSignal();
