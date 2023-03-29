@@ -94,16 +94,16 @@ void UART3_Initialize( void )
     /* WAKE = 0 */
     /* SIDL = 0 */
     /* RUNOVF = 0 */
-    /* CLKSEL = 0 */
+    /* CLKSEL = 1 */
     /* SLPEN = 0 */
     /* UEN = 0 */
-    U3MODE = 0x0;
+    U3MODE = 0x20000;
 
     /* Enable UART3 Receiver, Transmitter and TX Interrupt selection */
     U3STASET = (_U3STA_UTXEN_MASK | _U3STA_URXEN_MASK | _U3STA_UTXISEL1_MASK );
 
     /* BAUD Rate register Setup */
-    U3BRG = 12;
+    U3BRG = 64;
 
     /* Disable Interrupts */
     IEC1CLR = _IEC1_U3EIE_MASK;
@@ -133,6 +133,7 @@ bool UART3_SerialSetup( UART_SERIAL_SETUP *setup, uint32_t srcClkFreq )
 {
     bool status = false;
     uint32_t baud;
+    uint32_t status_ctrl;
     bool brgh = 0;
     int32_t uxbrg = 0;
 
@@ -172,6 +173,10 @@ bool UART3_SerialSetup( UART_SERIAL_SETUP *setup, uint32_t srcClkFreq )
             return status;
         }
 
+        /* Turn OFF UART3. Save UTXEN, URXEN and UTXBRK bits as these are cleared upon disabling UART */
+
+        status_ctrl = U3STA & (_U3STA_UTXEN_MASK | _U3STA_URXEN_MASK | _U3STA_UTXBRK_MASK);
+
         U3MODECLR = _U3MODE_ON_MASK;
 
         if(setup->dataWidth == UART_DATA_9_BIT)
@@ -192,6 +197,9 @@ bool UART3_SerialSetup( UART_SERIAL_SETUP *setup, uint32_t srcClkFreq )
         U3BRG = uxbrg;
 
         U3MODESET = _U3MODE_ON_MASK;
+
+        /* Restore UTXEN, URXEN and UTXBRK bits. */
+        U3STASET = status_ctrl;
 
         status = true;
     }

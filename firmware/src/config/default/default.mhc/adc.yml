@@ -331,6 +331,6 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: adc, value: '333.0'}
+        attributes: {id: adc, value: '800.0'}
 - type: ElementPosition
   attributes: {x: '350', y: '60', id: adc}

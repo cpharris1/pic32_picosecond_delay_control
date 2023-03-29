@@ -1,20 +1,23 @@
 /*******************************************************************************
-  UART3 PLIB
+  TMR Peripheral Library Interface Header File
 
-  Company:
+  Company
     Microchip Technology Inc.
 
-  File Name:
-    plib_uart3.h
+  File Name
+    plib_tmr_common.h
 
-  Summary:
-    UART3 PLIB Header File
+  Summary
+    TMR peripheral library interface.
 
-  Description:
-    None
+  Description
+    This file defines the interface to the TC peripheral library.  This
+    library provides access to and control of the associated peripheral
+    instance.
 
 *******************************************************************************/
 
+// DOM-IGNORE-BEGIN
 /*******************************************************************************
 * Copyright (C) 2019 Microchip Technology Inc. and its subsidiaries.
 *
@@ -37,70 +40,81 @@
 * ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 *******************************************************************************/
+// DOM-IGNORE-END
 
-#ifndef PLIB_UART3_H
-#define PLIB_UART3_H
+#ifndef PLIB_TMR_COMMON_H    // Guards against multiple inclusion
+#define PLIB_TMR_COMMON_H
 
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Included Files
+// *****************************************************************************
+// *****************************************************************************
+
+/*  This section lists the other files that are included in this file.
+*/
 #include <stddef.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include "device.h"
-#include "plib_uart_common.h"
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
 
-    extern "C" {
+extern "C" {
 
 #endif
+
 // DOM-IGNORE-END
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: Interface
+// Section: Data Types
 // *****************************************************************************
 // *****************************************************************************
+/*  The following data type definitions are used by the functions in this
+    interface and should be considered part of it.
+*/
 
-#define UART3_FrequencyGet()    (uint32_t)(10000000UL)
 
-/****************************** UART3 API *********************************/
+// *****************************************************************************
+/* TMR_CALLBACK
 
-void UART3_Initialize( void );
+  Summary:
+    Use to register a callback with the TMR.
 
-bool UART3_SerialSetup( UART_SERIAL_SETUP *setup, uint32_t srcClkFreq );
+  Description:
+    When a match is asserted, a callback can be activated.
+    Use TMR_CALLBACK as the function pointer to register the callback
+    with the match.
 
-bool UART3_Write( void *buffer, const size_t size );
+  Remarks:
+    The callback should look like:
+      void callback(handle, context);
+	Make sure the return value and parameters of the callback are correct.
+*/
 
-bool UART3_Read( void *buffer, const size_t size );
+typedef void (*TMR_CALLBACK)(uint32_t status, uintptr_t context);
 
-UART_ERROR UART3_ErrorGet( void );
+// *****************************************************************************
 
-bool UART3_AutoBaudQuery( void );
+typedef struct
+{
+    /*TMR callback function happens on Period match*/
+    TMR_CALLBACK callback_fn;
+    /* - Client data (Event Context) that will be passed to callback */
+    uintptr_t context;
 
-void UART3_AutoBaudSet( bool enable );
-
-bool UART3_ReadIsBusy( void );
-
-size_t UART3_ReadCountGet( void );
-
-bool UART3_ReadAbort(void);
-
-bool UART3_WriteIsBusy( void );
-
-size_t UART3_WriteCountGet( void );
-
-void UART3_WriteCallbackRegister( UART_CALLBACK callback, uintptr_t context );
-
-void UART3_ReadCallbackRegister( UART_CALLBACK callback, uintptr_t context );
-
-bool UART3_TransmitComplete( void );
+}TMR_TIMER_OBJECT;
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
 
-    }
+}
 
 #endif
 // DOM-IGNORE-END
 
-#endif // PLIB_UART3_H
+#endif //_PLIB_TMR_COMMON_H
+
+/**
+ End of File
+*/

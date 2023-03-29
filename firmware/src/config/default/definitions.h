@@ -51,6 +51,7 @@
 #include "peripheral/coretimer/plib_coretimer.h"
 #include "peripheral/uart/plib_uart3.h"
 #include "peripheral/i2c/master/plib_i2c3_master.h"
+#include "peripheral/tmr/plib_tmr2.h"
 #include "peripheral/cdac/plib_cdac1.h"
 #include "peripheral/clk/plib_clk.h"
 #include "peripheral/gpio/plib_gpio.h"
@@ -68,7 +69,7 @@ extern "C" {
 // DOM-IGNORE-END
 
 /* CPU clock frequency */
-#define CPU_CLOCK_FREQUENCY 24000000
+#define CPU_CLOCK_FREQUENCY 10000000
 
 // *****************************************************************************
 // *****************************************************************************

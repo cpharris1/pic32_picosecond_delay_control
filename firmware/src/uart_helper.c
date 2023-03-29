@@ -26,7 +26,7 @@ int UARTprint(char *str)
 }
 
 void printMenu(void){
-    UARTprint("PIC32 Picosecond Delay Control (v1.3)\n\r\n\r");
+    UARTprint("PIC32 Picosecond Delay Control (v1.4)\n\r\n\r");
     print_delay();
     UARTprint("\n\r");
     

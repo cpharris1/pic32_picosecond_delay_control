@@ -45,7 +45,7 @@ enum {
 volatile uint8_t dht11_flag=0;
 volatile uint8_t adc_flag=0;
 volatile uint8_t heartbeat_en=1;
-void TIMER1_InterruptSvcRoutine(uint32_t status, uintptr_t context)
+void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context)
 {
     if(heartbeat_en) LED1_Toggle();
     else LED1_Off();
@@ -78,8 +78,11 @@ int main ( void )
     SYS_Initialize ( NULL );
     
     // Start timer 1 for heartbeat LED
-    TMR1_CallbackRegister(TIMER1_InterruptSvcRoutine, (uintptr_t)NULL);
-    TMR1_Start();
+    //TMR1_CallbackRegister(TIMER1_InterruptSvcRoutine, (uintptr_t)NULL);
+    //TMR1_Start();
+    
+    TMR2_CallbackRegister(TIMER2_InterruptSvcRoutine, (uintptr_t)NULL);
+    TMR2_Start();
     
     ADC_CallbackRegister(ADC_ResultHandler, (uintptr_t)NULL);
     ADC_ConversionStart();
