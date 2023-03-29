@@ -1,20 +1,23 @@
 /*******************************************************************************
-  UART3 PLIB
+  TMR Peripheral Library Interface Source File
 
-  Company:
+  Company
     Microchip Technology Inc.
 
-  File Name:
-    plib_uart3.h
+  File Name
+    plib_tmr2.c
 
-  Summary:
-    UART3 PLIB Header File
+  Summary
+    TMR2 peripheral library source file.
 
-  Description:
-    None
+  Description
+    This file implements the interface to the TMR peripheral library.  This
+    library provides access to and control of the associated peripheral
+    instance.
 
 *******************************************************************************/
 
+// DOM-IGNORE-BEGIN
 /*******************************************************************************
 * Copyright (C) 2019 Microchip Technology Inc. and its subsidiaries.
 *
@@ -37,70 +40,108 @@
 * ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 *******************************************************************************/
+// DOM-IGNORE-END
 
-#ifndef PLIB_UART3_H
-#define PLIB_UART3_H
 
-#include <stddef.h>
-#include <stdbool.h>
-#include <stdint.h>
+// *****************************************************************************
+// *****************************************************************************
+// Section: Included Files
+// *****************************************************************************
+// *****************************************************************************
+
 #include "device.h"
-#include "plib_uart_common.h"
+#include "plib_tmr2.h"
 
-// DOM-IGNORE-BEGIN
-#ifdef __cplusplus  // Provide C++ Compatibility
 
-    extern "C" {
+static TMR_TIMER_OBJECT tmr2Obj;
 
-#endif
-// DOM-IGNORE-END
 
-// *****************************************************************************
-// *****************************************************************************
-// Section: Interface
-// *****************************************************************************
-// *****************************************************************************
+void TMR2_Initialize(void)
+{
+    /* Disable Timer */
+    T2CONCLR = _T2CON_ON_MASK;
 
-#define UART3_FrequencyGet()    (uint32_t)(10000000UL)
+    /*
+    SIDL = 0
+    TCKPS =7
+    T32   = 0
+    TCS = 0
+    */
+    T2CONSET = 0x70;
 
-/****************************** UART3 API *********************************/
+    /* Clear counter */
+    TMR2 = 0x0;
 
-void UART3_Initialize( void );
+    /*Set period */
+    PR2 = 19530U;
 
-bool UART3_SerialSetup( UART_SERIAL_SETUP *setup, uint32_t srcClkFreq );
+    /* Enable TMR Interrupt */
+    IEC0SET = _IEC0_T2IE_MASK;
 
-bool UART3_Write( void *buffer, const size_t size );
+}
 
-bool UART3_Read( void *buffer, const size_t size );
 
-UART_ERROR UART3_ErrorGet( void );
+void TMR2_Start(void)
+{
+    T2CONSET = _T2CON_ON_MASK;
+}
 
-bool UART3_AutoBaudQuery( void );
 
-void UART3_AutoBaudSet( bool enable );
+void TMR2_Stop (void)
+{
+    T2CONCLR = _T2CON_ON_MASK;
+}
 
-bool UART3_ReadIsBusy( void );
+void TMR2_PeriodSet(uint16_t period)
+{
+    PR2  = period;
+}
 
-size_t UART3_ReadCountGet( void );
+uint16_t TMR2_PeriodGet(void)
+{
+    return (uint16_t)PR2;
+}
 
-bool UART3_ReadAbort(void);
+uint16_t TMR2_CounterGet(void)
+{
+    return (uint16_t)(TMR2);
+}
 
-bool UART3_WriteIsBusy( void );
 
-size_t UART3_WriteCountGet( void );
+uint32_t TMR2_FrequencyGet(void)
+{
+    return (39062);
+}
 
-void UART3_WriteCallbackRegister( UART_CALLBACK callback, uintptr_t context );
 
-void UART3_ReadCallbackRegister( UART_CALLBACK callback, uintptr_t context );
+void TIMER_2_InterruptHandler (void)
+{
+    uint32_t status  = 0U;
+    status = IFS0bits.T2IF;
+    IFS0CLR = _IFS0_T2IF_MASK;
 
-bool UART3_TransmitComplete( void );
-
-// DOM-IGNORE-BEGIN
-#ifdef __cplusplus  // Provide C++ Compatibility
-
+    if((tmr2Obj.callback_fn != NULL))
+    {
+        tmr2Obj.callback_fn(status, tmr2Obj.context);
     }
+}
 
-#endif
-// DOM-IGNORE-END
 
-#endif // PLIB_UART3_H
+void TMR2_InterruptEnable(void)
+{
+    IEC0SET = _IEC0_T2IE_MASK;
+}
+
+
+void TMR2_InterruptDisable(void)
+{
+    IEC0CLR = _IEC0_T2IE_MASK;
+}
+
+
+void TMR2_CallbackRegister( TMR_CALLBACK callback_fn, uintptr_t context )
+{
+    /* Save callback_fn and context in local memory */
+    tmr2Obj.callback_fn = callback_fn;
+    tmr2Obj.context = context;
+}

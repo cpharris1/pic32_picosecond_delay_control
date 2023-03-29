@@ -1,17 +1,20 @@
 /*******************************************************************************
-  UART3 PLIB
+  Data Type definition of Timer PLIB
 
   Company:
     Microchip Technology Inc.
 
   File Name:
-    plib_uart3.h
+    plib_tmr2.h
 
   Summary:
-    UART3 PLIB Header File
+    Data Type definition of the Timer Peripheral Interface Plib.
 
   Description:
-    None
+    This file defines the Data Types for the Timer Plib.
+
+  Remarks:
+    None.
 
 *******************************************************************************/
 
@@ -38,14 +41,13 @@
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 *******************************************************************************/
 
-#ifndef PLIB_UART3_H
-#define PLIB_UART3_H
+#ifndef PLIB_TMR2_H
+#define PLIB_TMR2_H
 
 #include <stddef.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include "device.h"
-#include "plib_uart_common.h"
+#include "plib_tmr_common.h"
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
@@ -57,50 +59,43 @@
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: Interface
+// Section: Data Types
 // *****************************************************************************
 // *****************************************************************************
 
-#define UART3_FrequencyGet()    (uint32_t)(10000000UL)
+// *****************************************************************************
+// *****************************************************************************
+// Section: Interface Routines
+// *****************************************************************************
+// *****************************************************************************
 
-/****************************** UART3 API *********************************/
 
-void UART3_Initialize( void );
+// *****************************************************************************
+void TMR2_Initialize(void);
 
-bool UART3_SerialSetup( UART_SERIAL_SETUP *setup, uint32_t srcClkFreq );
+void TMR2_Start(void);
 
-bool UART3_Write( void *buffer, const size_t size );
+void TMR2_Stop(void);
 
-bool UART3_Read( void *buffer, const size_t size );
+void TMR2_PeriodSet(uint16_t);
 
-UART_ERROR UART3_ErrorGet( void );
+uint16_t TMR2_PeriodGet(void);
 
-bool UART3_AutoBaudQuery( void );
+uint16_t TMR2_CounterGet(void);
 
-void UART3_AutoBaudSet( bool enable );
+uint32_t TMR2_FrequencyGet(void);
 
-bool UART3_ReadIsBusy( void );
+void TMR2_InterruptEnable(void);
 
-size_t UART3_ReadCountGet( void );
+void TMR2_InterruptDisable(void);
 
-bool UART3_ReadAbort(void);
-
-bool UART3_WriteIsBusy( void );
-
-size_t UART3_WriteCountGet( void );
-
-void UART3_WriteCallbackRegister( UART_CALLBACK callback, uintptr_t context );
-
-void UART3_ReadCallbackRegister( UART_CALLBACK callback, uintptr_t context );
-
-bool UART3_TransmitComplete( void );
+void TMR2_CallbackRegister( TMR_CALLBACK callback_fn, uintptr_t context );
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
 
     }
-
 #endif
 // DOM-IGNORE-END
 
-#endif // PLIB_UART3_H
+#endif /* PLIB_TMR2_H */
