@@ -80,11 +80,11 @@
 #pragma config FWDTEN =     OFF
 
 /*** FOSCSEL ***/
-#pragma config FNOSC =      FRCDIV
-#pragma config PLLSRC =     FRC
+#pragma config FNOSC =      PRI
+#pragma config PLLSRC =     PRI
 #pragma config SOSCEN =    OFF
 #pragma config IESO =       ON
-#pragma config POSCMOD =    OFF
+#pragma config POSCMOD =    EC
 #pragma config OSCIOFNC =   OFF
 #pragma config SOSCSEL =     OFF
 #pragma config FCKSM =      CSECME
@@ -160,6 +160,8 @@ void SYS_Initialize ( void* data )
 	UART3_Initialize();
 
     I2C3_Initialize();
+
+    TMR2_Initialize();
 
     CDAC1_Initialize();
 

@@ -10,34 +10,34 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: i2c3, value: '237'}
+        attributes: {id: i2c3, value: '98'}
   - type: Integer
     attributes: {id: I2CS_CORE_TIMER_FREQUENCY}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: i2c3, value: '12000000'}
+        attributes: {id: i2c3, value: '5000000'}
   - type: Integer
     attributes: {id: I2CS_RISE_TIME_CORE_TIMER_CNTS}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: i2c3, value: '3'}
+        attributes: {id: i2c3, value: '1'}
   - type: Integer
     attributes: {id: I2CS_SETUP_TIME_CORE_TIMER_CNTS}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: i2c3, value: '1'}
+        attributes: {id: i2c3, value: '0'}
   - type: Integer
     attributes: {id: I2C_CLOCK_FREQ}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: i2c3, value: '24000000'}
+        attributes: {id: i2c3, value: '10000000'}
 - type: ElementPosition
   attributes: {x: '356', y: '132', id: i2c3}
