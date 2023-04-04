@@ -158,7 +158,7 @@ int main ( void )
                         UARTprint("Current ADC Data\n\r");
                         //get_ADC(); 
                         UARTprint("\n\rADC Data History\n\r");
-                        UARTprint("Samp 3.3V 5V 12V FTUNE\n\r");
+                        UARTprint("Samp,3.3V,5V,12V,FTUNE\n\r");
                         
                         if(ADCi==(adc_ASIZE-1) && !adc_full){
                             adc_full=1;
@@ -167,12 +167,12 @@ int main ( void )
                         }
                         if(adc_full==1){
                             for(printADC=ADCi;printADC<adc_ASIZE;printADC++){
-                                sprintf(str, "%d %.3f %.3f %.3f %.3f\n\r", printADC,thr_v[printADC],five_v[printADC],twelve_v[printADC],ftune[printADC]);
+                                sprintf(str, "%d,%.3f,%.3f,%.3f,%.3f\n\r", printADC,thr_v[printADC],five_v[printADC],twelve_v[printADC],ftune[printADC]);
                                 UARTprint(str);    
                             }
                         }
                         for(printADC=0;printADC<ADCi;printADC++){//this is the beginning of the array
-                            sprintf(str, "%d %.3f %.3f %.3f %.3f\n\r", printADC,thr_v[printADC],five_v[printADC],twelve_v[printADC],ftune[printADC]);
+                            sprintf(str, "%d,%.3f,%.3f,%.3f,%.3f\n\r", printADC,thr_v[printADC],five_v[printADC],twelve_v[printADC],ftune[printADC]);
                                 UARTprint(str); 
                         }
                         printWaitReturn();
@@ -217,7 +217,13 @@ int main ( void )
                         UARTprint("Input nanosecond delay (0-200ns): ");
                         char ns[10];
                         getStr(ns, 10);
-                        set_ns_delay(ns);
+                        if(isValidDecimal(ns)){
+                            set_ns_delay(atoi(ns));
+                        }
+                        else{
+                            UARTprint("Not a valid number. Please enter valid number between 0-200\n\r");
+                        }
+
                         
                         printWaitReturn();
                         state = WAIT_RETURN;
@@ -226,7 +232,12 @@ int main ( void )
                         UARTprint("Input picosecond delay (0-999ps): ");
                         char ps[10];
                         getStr(ps, 10);
-                        set_ps_delay(ps);
+                        if(isValidDecimal(ps)){
+                            set_ps_delay(atoi(ps));  
+                        }
+                        else{
+                            UARTprint("Not a valid number. Please enter value between 0-999\n\r");
+                        }
                         
                         printWaitReturn();
                         state = WAIT_RETURN;
@@ -246,7 +257,7 @@ int main ( void )
                         for(int i=0; i<=200; i++){
                             char ns[10];
                             sprintf(ns, "%d", i);
-                            set_ns_delay(ns);
+                            set_ns_delay(atoi(ns));
                             CORETIMER_DelayMs(100);
                         }                      
                         printWaitReturn();
@@ -257,7 +268,7 @@ int main ( void )
                         for(int i=0; i<=999; i+=10){
                             char ps[10];
                             sprintf(ps, "%d", i);
-                            set_ps_delay(ps);
+                            set_ps_delay(atoi(ps));
                             CORETIMER_DelayMs(100);
                         }   
                         
@@ -277,7 +288,7 @@ int main ( void )
                         break;
                     case '5':
                         UARTprint("Temp/Humid Data History\n\r");
-                        UARTprint("i C RH\n\r");
+                        UARTprint("i,C,RH\n\r");
                         
                         if(dataCount==(ASIZE-1) && !flag_full){
                             flag_full=1;
@@ -288,12 +299,12 @@ int main ( void )
                             //sprintf(str, "Back end printing, flag_full = %d\n\r",flag_full);
                             //UARTprint(str);
                             for(printData=dataCount;printData<ASIZE;printData++){
-                                sprintf(str, "%d %d.%d %d.%d\n\r", printData,T[printData],Tdec[printData],RHa[printData],RHdec[printData]);
+                                sprintf(str, "%d,%d.%d,%d.%d\n\r", printData,T[printData],Tdec[printData],RHa[printData],RHdec[printData]);
                                 UARTprint(str);
                             }
                         }
                         for(printData=0;printData<dataCount;printData++){
-                            sprintf(str, "%d %d.%d %d.%d\n\r", printData,T[printData],Tdec[printData],RHa[printData],RHdec[printData]);
+                            sprintf(str, "%d,%d.%d,%d.%d\n\r", printData,T[printData],Tdec[printData],RHa[printData],RHdec[printData]);
                             UARTprint(str);
                         }
                         printWaitReturn();

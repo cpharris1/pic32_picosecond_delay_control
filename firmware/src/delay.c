@@ -26,21 +26,13 @@ uint32_t Dn_pin_names[10] = {
     DELAY_D9_PIN
 };
 
-void set_ns_delay(char *ns){
+void set_ns_delay(int ns){
     // NS accepts new data when latch is HIGH
     // NS locks when latch is LOW
-    uint16_t n;
+    //uint16_t n;
     // Input validation
-    if(isValidDecimal(ns)){
-        n = atoi(ns);
-        if(n > 200 || n < 0){
-            sprintf(strbuf, "Error: %s is not in the accepted 0-200ns range.\n\r", ns);
-            UARTprint(strbuf);
-            return;
-        }
-    }
-    else{
-        sprintf(strbuf, "Error: %s is not a valid number. Please enter a value between 0-200ns\n\r", ns);
+    if(ns > 200 || ns < 0){
+        sprintf(strbuf, "Error: %d is not in the accepted 0-200ns range.\n\r", ns);
         UARTprint(strbuf);
         return;
     }
@@ -59,13 +51,13 @@ void set_ns_delay(char *ns){
     //getStr(strns, 5); //FIXME: GET RID OF THIS, THIS IS JUST FOR DEBUG/DEMO
     CORETIMER_DelayUs(1);
     
-    ns_delay = n;
+    ns_delay = ns;
     for(int i=0; i<8; i++){
-     dn[i] = n % 2;
-     n /= 2;
+     dn[i] = ns % 2;
+     ns /= 2;
      GPIO_PinWrite(Dn_pin_names[i], dn[i]);
     }
-    sprintf(strns, "Setting nanosecond delay to %dns = [", atoi(ns));
+    sprintf(strns, "Setting nanosecond delay to %dns = [", ns_delay);
     UARTprint(strns);
     for(int i=7; i>=0; i--){
         sprintf(strns,"%d", dn[i]);
@@ -80,19 +72,11 @@ void set_ns_delay(char *ns){
     lock_ns();
 }
 
-void set_ps_delay(char *ps){
-    uint16_t p;
+void set_ps_delay(int ps){
+    //uint16_t p;
     // Input validation
-    if(isValidDecimal(ps)){
-        p = atoi(ps);
-        if(p > 999 || p < 0){
-            sprintf(strbuf, "Error: %s is not in the accepted 0-999ps range.\n\r", ps);
-            UARTprint(strbuf);
-            return;
-        }
-    }
-    else{
-        sprintf(strbuf, "Error: %s is not a valid number. Please enter a value between 0-999ps\n\r", ps);
+    if(ps > 999 || ps < 0){
+        sprintf(strbuf, "Error: %d is not in the accepted 0-999ps range.\n\r", ps);
         UARTprint(strbuf);
         return;
     }
@@ -114,9 +98,9 @@ void set_ps_delay(char *ps){
     CORETIMER_DelayUs(1);
     //getStr(strps, 5); //FIXME: GET RID OF THIS, THIS IS JUST FOR DEBUG/DEMO
     
-    ps_delay = p;
-    uint16_t cp = p/10;
-    uint8_t fp = p%10;
+    ps_delay = ps;
+    uint16_t cp = ps/10;
+    uint8_t fp = ps%10;
     
     for(int i=0; i<10; i++){
      dcp[i] = cp % 2;
@@ -124,7 +108,7 @@ void set_ps_delay(char *ps){
      GPIO_PinWrite(Dn_pin_names[i], dcp[i]);
     }
     
-    sprintf(strps,"Setting coarse ps delay to %dps = [", (p/10)*10);
+    sprintf(strps,"Setting coarse ps delay to %dps = [", (ps/10)*10);
     UARTprint(strps);
     for(int i=9; i>=0; i--){
         sprintf(strps,"%d", dcp[i]);
@@ -155,9 +139,11 @@ void set_full_delay(char *fd){
             return;
         }
         char psstr[10];
-        char nsstr[10];
+        int ps;
+        int ns;
         // Split the decimal string into the ns and ps components
         if(hasDecimal(fd)){
+            /*
             const char s[2] = ".";
             char *nstok;
             char *pstok;
@@ -165,11 +151,21 @@ void set_full_delay(char *fd){
             pstok = strtok(NULL, s);
             strcpy(psstr, pstok);
             psstr[3] = '\0';
-            strcpy(nsstr, nstok);
+            strcpy(nsstr, nstok);*/
+    
+            sscanf(fd, "%d.%s", &ns, psstr);
+            //printf("strlen(ps) = %d\n", strlen(psstr));
+            for(int i=strlen(psstr); i<3; i++){
+                strcat(psstr, "0");
+            }
+            ps = atoi(psstr);
         }
         else{
-            strcpy(nsstr, fd);
-            strcpy(psstr, "0\0");
+            //strcpy(nsstr, fd);
+            //strcpy(psstr, "0\0");
+            // No decimal was inputted. User put in just ns delay
+            ns = atoi(fd);
+            ps = 0;
         }
 
         //sprintf(strbuf, "ns: %s ps: %s\n\r", nstok, pstok);
@@ -179,19 +175,19 @@ void set_full_delay(char *fd){
         //sprintf(strbuf, "ns = %d; ps = %d\n\r", nanosecond, picosecond);
         //UARTprint(strbuf);
                 
-        if(!valid_ps(psstr)){
+        if(!valid_ps(ps)){
             sprintf(strbuf, "%s does not have a valid picosecond value. Please enter a value between 0-999ps\n\r", fd);
             UARTprint(strbuf);
             return;
         }
-        if(!valid_ns(nsstr)){
+        if(!valid_ns(ns)){
             sprintf(strbuf, "%s does not have a valid nanosecond value. Please enter a value between 0-200ns\n\r", fd);
             UARTprint(strbuf);
             return;
         }
         else{
-            set_ns_delay(nsstr);
-            set_ps_delay(psstr);
+            set_ns_delay(ns);
+            set_ps_delay(ps);
         }
     }
     else{
@@ -235,12 +231,10 @@ void print_delay(void){
     UARTprint(strbuf);
 }
 
-uint8_t valid_ns(char *ns){
-    uint16_t n = atoi(ns);
+uint8_t valid_ns(int n){
     return (n <= 200 && n >= 0);
 }
 
-uint8_t valid_ps(char *ps){
-    uint16_t p = atoi(ps);
+uint8_t valid_ps(int p){
     return (p <= 999 && p >= 0);
 }

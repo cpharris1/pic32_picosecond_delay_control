@@ -3,6 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/config/default/peripheral/tmr1/plib_tmr1.h</file>
             <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/main.c</file>
             <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/uart_helper.c</file>
             <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/adc.c</file>
@@ -12,7 +13,6 @@
             <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/uart_helper.h</file>
             <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/adc.h</file>
             <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/config/default/peripheral/uart/plib_uart3.c</file>
-            <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/config/default/peripheral/tmr/plib_tmr2.c</file>
             <file>file:/C:/Users/chloe/HarmonyProjects/pic32_picosecond_delay_control/firmware/src/dac.h</file>
         </group>
     </open-files>
