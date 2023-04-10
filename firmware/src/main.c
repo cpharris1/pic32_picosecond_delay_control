@@ -1,27 +1,3 @@
-/*******************************************************************************
-  Main Source File
-
-  Company:
-    Microchip Technology Inc.
-
-  File Name:
-    main.c
-
-  Summary:
-    This file contains the "main" function for a project.
-
-  Description:
-    This file contains the "main" function for a project.  The
-    "main" function calls the "SYS_Initialize" function to initialize the state
-    machines of all modules in the system
- *******************************************************************************/
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: Included Files
-// *****************************************************************************
-// *****************************************************************************
-
 #include <stddef.h>                     // Defines NULL
 #include <stdbool.h>                    // Defines true
 #include <stdlib.h>                     // Defines EXIT_FAILURE
@@ -33,6 +9,7 @@
 #include "dht11.h"
 #include "delay.h"
 
+// States for FSM
 uint8_t state;
 enum {
      IDLE = 0,
@@ -45,6 +22,8 @@ enum {
 volatile uint8_t dht11_flag=0;
 volatile uint8_t adc_flag=0;
 volatile uint8_t heartbeat_en=1;
+
+// Timer2 interrupt for heartbeat LED, and timing DHT11 and ADC sampling
 void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context)
 {
     if(heartbeat_en) LED1_Toggle();
@@ -53,12 +32,14 @@ void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context)
     adc_flag=1;
 }
     
-
+/*
+    Returns whether the menu option is a valid choice
+    @param opt menu option character
+    @returns 1 if valid, 0 if invalid
+*/
 bool validOption(char opt){
-    return ((opt >= '1' && opt <= '7') || (opt >= 'w' && opt <= 'z'));
+    return ((opt >= '1' && opt <= '6') || (opt >= 'a' && opt <= 'e'));
 }
-
-//Below is for the Temp/Humid Sensor (DHT11)
 
 
 // *****************************************************************************
@@ -77,17 +58,15 @@ int main ( void )
     // Initialize all modules
     SYS_Initialize ( NULL );
     
-    // Start timer 1 for heartbeat LED
-    //TMR1_CallbackRegister(TIMER1_InterruptSvcRoutine, (uintptr_t)NULL);
-    //TMR1_Start();
-    
+    // Start timer 2 for heartbeat LED, DHT11, and ADC sampling
     TMR2_CallbackRegister(TIMER2_InterruptSvcRoutine, (uintptr_t)NULL);
     TMR2_Start();
     
+    // Register the ADC callback
     ADC_CallbackRegister(ADC_ResultHandler, (uintptr_t)NULL);
-    ADC_ConversionStart();
+    //ADC_ConversionStart(); Main should not poll ADCs every time...
     
-    
+    // Register the I2C callback and configure SDA and SCL pins
     I2C3_CallbackRegister(MCP4725_I2CCallback, (uintptr_t)NULL );
     TRISBbits.TRISB7 = 1;
     TRISBbits.TRISB13 = 1;
@@ -106,11 +85,12 @@ int main ( void )
         SYS_Tasks ( );
         GPIO_PinSet(GPIO_PIN_RD0);
         
+        // If DHT11 flag is high collect DHT11 data
         if(dht11_flag){
             contData();
             dht11_flag=0;
         }
-        
+        // If ADC flag is high collect ADC data
         if(adc_flag){
             ADC_ConversionStart();
             adc_flag=0;
@@ -142,77 +122,6 @@ int main ( void )
             case PROCESS_INPUT:
                 UARTprint("\n\r");
                 switch(menuSelect){
-                    case '6':
-                        if(heartbeat_en){
-                            UARTprint("Heartbeat LED disabled\n\r");
-                            heartbeat_en = 0;
-                        }
-                        else{
-                            UARTprint("Heartbeat LED enabled\n\r");
-                            heartbeat_en = 1;
-                        }
-                        printWaitReturn();
-                        state = WAIT_RETURN;
-                        break;
-                    case '7':
-                        UARTprint("Current ADC Data\n\r");
-                        //get_ADC(); 
-                        UARTprint("\n\rADC Data History\n\r");
-                        UARTprint("Samp,3.3V,5V,12V,FTUNE\n\r");
-                        
-                        if(ADCi==(adc_ASIZE-1) && !adc_full){
-                            adc_full=1;
-                            sprintf(str, "Array is full, adc_full = %d\n\r",adc_full);
-                            UARTprint(str);
-                        }
-                        if(adc_full==1){
-                            for(printADC=ADCi;printADC<adc_ASIZE;printADC++){
-                                sprintf(str, "%d,%.3f,%.3f,%.3f,%.3f\n\r", printADC,thr_v[printADC],five_v[printADC],twelve_v[printADC],ftune[printADC]);
-                                UARTprint(str);    
-                            }
-                        }
-                        for(printADC=0;printADC<ADCi;printADC++){//this is the beginning of the array
-                            sprintf(str, "%d,%.3f,%.3f,%.3f,%.3f\n\r", printADC,thr_v[printADC],five_v[printADC],twelve_v[printADC],ftune[printADC]);
-                                UARTprint(str); 
-                        }
-                        printWaitReturn();
-                        state = WAIT_RETURN;
-                        break;
-                    case 'w':
-                        UARTprint("Input voltage to write to DAC: ");
-                        char dac[10];
-                        getStr(dac, 10);
-                        
-                        write_voltage_DAC(dac);
-                        
-                        printWaitReturn();
-                        state = WAIT_RETURN;
-                        break;
-                    case '4':
-                     
-                        StartSignal();
-                        CheckResponse();
-                        if(Check == 1){
-                            RH_byte1 = ReadData();
-                            RH_byte2 = ReadData();
-                            T_byte1 = ReadData();
-                            T_byte2 = ReadData();
-                            Sum = ReadData();
-                            if(Sum == ((RH_byte1+RH_byte2+T_byte1+T_byte2) & 0XFF)){
-                                RH = RH_byte1;
-                                RH_dec = RH_byte2;
-                                Temp = T_byte1;
-                                Temp_dec = T_byte2;
-                            }
-                        }
-                        sprintf(str, "Temperature is %d.%d degrees C \n\r", Temp,Temp_dec);
-                        UARTprint(str);
-                        sprintf(str, "Humidity is %d.%d %%RH \n\r", RH, RH_dec);
-                        UARTprint(str);
-                        
-                        printWaitReturn();
-                        state = WAIT_RETURN;
-                        break;
                     case '1':
                         UARTprint("Input nanosecond delay (0-200ns): ");
                         char ns[10];
@@ -243,7 +152,7 @@ int main ( void )
                         state = WAIT_RETURN;
                         break;
                     case '3':
-                        UARTprint("Input total delay in nanoseconds with up to 3 decimal places for picosecond delay (0-200.000ns): ");
+                        UARTprint("Input total delay in ns with up to 3 decimal places (0-200.000ns): ");
                         char fd[10];
                         getStr(fd, 10);
                         
@@ -252,37 +161,28 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case 'x':
-                        UARTprint("Sweeping 0-200ns\n\r");
-                        for(int i=0; i<=200; i++){
-                            char ns[10];
-                            sprintf(ns, "%d", i);
-                            set_ns_delay(atoi(ns));
-                            CORETIMER_DelayMs(100);
-                        }                      
-                        printWaitReturn();
-                        state = WAIT_RETURN;
-                        break;
-                    case 'y':
-                        UARTprint("Sweeping 0-999ps\n\r");
-                        for(int i=0; i<=999; i+=10){
-                            char ps[10];
-                            sprintf(ps, "%d", i);
-                            set_ps_delay(atoi(ps));
-                            CORETIMER_DelayMs(100);
-                        }   
-                        
-                        printWaitReturn();
-                        state = WAIT_RETURN;
-                        break;
-                    case 'z':
-                        writeDAC(1860);
-                        // configure MM to sample every 800ms
-                        CORETIMER_DelayMs(2000);
-                        for(uint16_t val = 1860; val < 2482; val++){
-                            writeDAC(val);
-                            CORETIMER_DelayMs(800);
+                    case '4':
+                     
+                        StartSignal();
+                        CheckResponse();
+                        if(Check == 1){
+                            RH_byte1 = ReadData();
+                            RH_byte2 = ReadData();
+                            T_byte1 = ReadData();
+                            T_byte2 = ReadData();
+                            Sum = ReadData();
+                            if(Sum == ((RH_byte1+RH_byte2+T_byte1+T_byte2) & 0XFF)){
+                                RH = RH_byte1;
+                                RH_dec = RH_byte2;
+                                Temp = T_byte1;
+                                Temp_dec = T_byte2;
+                            }
                         }
+                        sprintf(str, "Temperature is %d.%d degrees C \n\r", Temp,Temp_dec);
+                        UARTprint(str);
+                        sprintf(str, "Humidity is %d.%d %%RH \n\r", RH, RH_dec);
+                        UARTprint(str);
+                        
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
@@ -306,6 +206,86 @@ int main ( void )
                         for(printData=0;printData<dataCount;printData++){
                             sprintf(str, "%d,%d.%d,%d.%d\n\r", printData,T[printData],Tdec[printData],RHa[printData],RHdec[printData]);
                             UARTprint(str);
+                        }
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case '6':
+                        UARTprint("Current ADC Data\n\r");
+                        //get_ADC(); 
+                        UARTprint("\n\rADC Data History\n\r");
+                        UARTprint("Samp,3.3V,5V,12V,FTUNE\n\r");
+                        
+                        if(ADCi==(adc_ASIZE-1) && !adc_full){
+                            adc_full=1;
+                            sprintf(str, "Array is full, adc_full = %d\n\r",adc_full);
+                            UARTprint(str);
+                        }
+                        if(adc_full==1){
+                            for(printADC=ADCi;printADC<adc_ASIZE;printADC++){
+                                sprintf(str, "%d,%.3f,%.3f,%.3f,%.3f\n\r", printADC,thr_v[printADC],five_v[printADC],twelve_v[printADC],ftune[printADC]);
+                                UARTprint(str);    
+                            }
+                        }
+                        for(printADC=0;printADC<ADCi;printADC++){//this is the beginning of the array
+                            sprintf(str, "%d,%.3f,%.3f,%.3f,%.3f\n\r", printADC,thr_v[printADC],five_v[printADC],twelve_v[printADC],ftune[printADC]);
+                                UARTprint(str); 
+                        }
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case 'a':
+                        if(heartbeat_en){
+                            UARTprint("Heartbeat LED disabled\n\r");
+                            heartbeat_en = 0;
+                        }
+                        else{
+                            UARTprint("Heartbeat LED enabled\n\r");
+                            heartbeat_en = 1;
+                        }
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case 'b':
+                        UARTprint("Input voltage to write to DAC: ");
+                        char dac[10];
+                        getStr(dac, 10);
+                        
+                        write_voltage_DAC(dac);
+                        
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case 'c':
+                        UARTprint("Sweeping 0-200ns\n\r");
+                        for(int i=0; i<=200; i++){
+                            char ns[10];
+                            sprintf(ns, "%d", i);
+                            set_ns_delay(atoi(ns));
+                            CORETIMER_DelayMs(100);
+                        }                      
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case 'd':
+                        UARTprint("Sweeping 0-999ps\n\r");
+                        for(int i=0; i<=999; i+=10){
+                            char ps[10];
+                            sprintf(ps, "%d", i);
+                            set_ps_delay(atoi(ps));
+                            CORETIMER_DelayMs(100);
+                        }   
+                        
+                        printWaitReturn();
+                        state = WAIT_RETURN;
+                        break;
+                    case 'e':
+                        writeDAC(1860);
+                        // configure MM to sample every 800ms
+                        CORETIMER_DelayMs(2000);
+                        for(uint16_t val = 1860; val < 2482; val++){
+                            writeDAC(val);
+                            CORETIMER_DelayMs(800);
                         }
                         printWaitReturn();
                         state = WAIT_RETURN;

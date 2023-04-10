@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>                                  
+  <executable name="dist/default/production/pic32_picosecond_delay_control.X.production.elf">                 
+    <memory name="program">                 
+      <units>bytes</units>                 
+      <length>263312</length>                 
+      <used>40796</used>                     
+      <free>222516</free>                     
+    </memory>                              
+    <memory name="data">              
+      <units>bytes</units>                 
+      <length>32768</length>                 
+      <used>1924</used>                     
+      <free>30844</free>                     
+    </memory>                              
+  </executable>                            
+</project>                                 
