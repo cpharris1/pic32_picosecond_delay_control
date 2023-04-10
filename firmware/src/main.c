@@ -115,7 +115,7 @@ int main ( void )
                     if(validOption(c)) menuSelect = c;
 
                     // if ENTER key was pressed (sends \r\n or \n depending on system) process the menu option
-                    if(c=='\r' || c=='\n').
+                    if(c=='\r' || c=='\n')
                     {
                         UARTprint("\n\r");
                         state = PROCESS_INPUT;
