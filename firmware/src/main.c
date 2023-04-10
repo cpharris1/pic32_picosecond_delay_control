@@ -96,6 +96,7 @@ int main ( void )
             adc_flag=0;
         }
         
+        // Finite state machine
         switch(state){
             case IDLE:
                 break;
@@ -110,8 +111,11 @@ int main ( void )
                 {
                     c=U3RXREG;          //read it
                     U3TXREG=c;          //echo it back
+                    // See if the character is a valid menu option, if it is save it
                     if(validOption(c)) menuSelect = c;
-                    if(c=='\r' || c=='\n')          //If that char was "A" then send a bunch of long stuff.
+
+                    // if ENTER key was pressed (sends \r\n or \n depending on system) process the menu option
+                    if(c=='\r' || c=='\n').
                     {
                         UARTprint("\n\r");
                         state = PROCESS_INPUT;
@@ -122,46 +126,50 @@ int main ( void )
             case PROCESS_INPUT:
                 UARTprint("\n\r");
                 switch(menuSelect){
-                    case '1':
+                    case '1':  // Set ns delay
                         UARTprint("Input nanosecond delay (0-200ns): ");
+                        // Read in the nanosecond delay as string from the UART
                         char ns[10];
                         getStr(ns, 10);
+                        // Make sure it's a valid number, convert string to int, then set the ns delay
                         if(isValidDecimal(ns)){
                             set_ns_delay(atoi(ns));
                         }
                         else{
                             UARTprint("Not a valid number. Please enter valid number between 0-200\n\r");
                         }
-
-                        
+                        // Wait for user to press ENTER
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '2':
+                    case '2': // Set ps delay
                         UARTprint("Input picosecond delay (0-999ps): ");
+                        // Read in the picosecond delay as string from the UART
                         char ps[10];
                         getStr(ps, 10);
+                        // Make sure it's a valid number, convert string to int, then set the ps delay
                         if(isValidDecimal(ps)){
                             set_ps_delay(atoi(ps));  
                         }
                         else{
                             UARTprint("Not a valid number. Please enter value between 0-999\n\r");
                         }
-                        
+                        // Wait for user to press ENTER
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '3':
+                    case '3': // Set full delay in form NNN.PPP nanoseconds
                         UARTprint("Input total delay in ns with up to 3 decimal places (0-200.000ns): ");
+                        // Read in full delay as string from the UART
                         char fd[10];
                         getStr(fd, 10);
-                        
+                        // Set the full delay
                         set_full_delay(fd);
-                        
+                        // Wait for user to press ENTER
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '4':
+                    case '4': // Get current temperature/humidity data
                      
                         StartSignal();
                         CheckResponse();
@@ -186,7 +194,7 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '5':
+                    case '5': // Get temperature/humidity data history
                         UARTprint("Temp/Humid Data History\n\r");
                         UARTprint("i,C,RH\n\r");
                         
@@ -234,7 +242,8 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case 'a':
+                    // Alphabetical cases are for debug/demo purposes...
+                    case 'a': // Turn the heartbeat LED on or off
                         if(heartbeat_en){
                             UARTprint("Heartbeat LED disabled\n\r");
                             heartbeat_en = 0;
@@ -246,18 +255,20 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case 'b':
+                    case 'b': // Manually input the voltage to write to the DAC
+                        // Read in the voltage as a string from the UART
                         UARTprint("Input voltage to write to DAC: ");
                         char dac[10];
                         getStr(dac, 10);
-                        
+                        // Write the voltage to the DAC
                         write_voltage_DAC(dac);
-                        
+                        // Wait for user to press ENTER
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case 'c':
+                    case 'c': // Demo to sweep ns delay chip from 0-200ns to verify GPIO output
                         UARTprint("Sweeping 0-200ns\n\r");
+                        // Loop through 0-200ns in 1ns increments
                         for(int i=0; i<=200; i++){
                             char ns[10];
                             sprintf(ns, "%d", i);
@@ -267,8 +278,9 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case 'd':
+                    case 'd': // Demo to sweep coarse ps delay from 0-990ps to verify GPIO output
                         UARTprint("Sweeping 0-999ps\n\r");
+                        // Loop through 0-990ns in 10ps increments
                         for(int i=0; i<=999; i+=10){
                             char ps[10];
                             sprintf(ps, "%d", i);
@@ -279,10 +291,10 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case 'e':
+                    case 'e': // Demo to sweep FTUNE voltage range to verify DAC output
                         writeDAC(1860);
-                        // configure MM to sample every 800ms
                         CORETIMER_DelayMs(2000);
+                        // Loop through 1.6V to 2.0V and st the DAC every 800ms
                         for(uint16_t val = 1860; val < 2482; val++){
                             writeDAC(val);
                             CORETIMER_DelayMs(800);
@@ -295,16 +307,15 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                        
                 }
-                
                 break;
-            case WAIT_RETURN:
+            case WAIT_RETURN: // Wait for ENTER to be pressed to start new menu option
                 if (IFS1bits.U3RXIF)    //If we have received a char,
                 {
                     c=U3RXREG;          //read it
                     U3TXREG=c;          //echo it back
-                    if(c=='\r' || c=='\n')          //If that char was "A" then send a bunch of long stuff.
+                    // If ENTER was pressed, go back to top and accept new menu ption
+                    if(c=='\r' || c=='\n')
                     {
                         UARTprint("\n\r");
                         state = PRINT_MENU;
