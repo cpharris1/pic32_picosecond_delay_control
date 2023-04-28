@@ -6,6 +6,7 @@
 #include "uart_helper.h"
 #include "delay.h"
 #include <stdlib.h>
+#include "dac.h"
 
 
 uint16_t dn[8];
@@ -24,6 +25,20 @@ uint32_t Dn_pin_names[10] = {
     DELAY_D7_PIN,
     DELAY_D8_PIN,
     DELAY_D9_PIN
+};
+
+char* FTUNE_voltage[]={
+    "2.145",
+    "1.980",
+    "1.873",
+    "1.819",
+    "1.765",
+    "1.712",
+    "1.659",
+    "1.605",
+    "1.551",
+    "1.497",
+    "1.444"
 };
 
 /*
@@ -129,14 +144,13 @@ void set_ps_delay(int ps){
     // Delay 1us to make sure ps chip takes new changes.
     CORETIMER_DelayUs(1);
 
+    // Set the FTUNE voltage
+    sprintf(strps,"Setting fine ps delay to %dps = ", fp);
+    UARTprint(strps);
+    write_voltage_DAC(FTUNE_voltage[fp]);
+    
     // Lock so values cannot be changed.
     lock_ps(); 
-
-    // Set the FTUNE voltage
-    sprintf(strps,"Setting FTUNE voltage for fine ps delay of %dps\n\r", fp);
-    UARTprint(strps);
-    // TODO: Implement this once zeek provides values for the DAC
-    
 }
 
 /*
@@ -253,7 +267,7 @@ uint8_t ns_is_locked(void){
 
 // Helper function to print the current delay in ns
 void print_delay(void){
-    sprintf(strbuf, "Current delay: %3d.%3d ns\n\r", ns_delay, ps_delay);
+    sprintf(strbuf, "Current delay: %3d.%03d ns\n\r", ns_delay, ps_delay);
     UARTprint(strbuf);
 }
 

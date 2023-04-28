@@ -78,7 +78,10 @@ int main ( void )
     char str[100];
     uint32_t printData =0;
     uint32_t printADC =0;
-
+    
+    // Initialize delay chips for 0 
+    set_full_delay("0");
+    
     while ( true )
     {
         /* Maintain state machines of all polled MPLAB Harmony modules. */

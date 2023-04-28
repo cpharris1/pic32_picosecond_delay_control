@@ -19,9 +19,9 @@ volatile uint8_t adc_full=0;
 void ADC_ResultHandler(uintptr_t context)
 {
     /* Read the ADC result */
-    adc_arr[0] = ADC_ResultGet(ADC_RESULT_BUFFER_0);   //AN2 -- 3.3V
-    adc_arr[1] = ADC_ResultGet(ADC_RESULT_BUFFER_1);   //AN9 -- 5V
-    adc_arr[2] = ADC_ResultGet(ADC_RESULT_BUFFER_2);   //AN15 -- 12V
+    adc_arr[0] = ADC_ResultGet(ADC_RESULT_BUFFER_0);   //AN2 -- 12V
+    adc_arr[1] = ADC_ResultGet(ADC_RESULT_BUFFER_1);   //AN9 -- 3.3V
+    adc_arr[2] = ADC_ResultGet(ADC_RESULT_BUFFER_2);   //AN15 -- 5V
     adc_arr[3] = ADC_ResultGet(ADC_RESULT_BUFFER_3);   //AN19 -- FTUNE
     result_ready = true;
     
@@ -30,12 +30,12 @@ void ADC_ResultHandler(uintptr_t context)
         if(ADCi<adc_ASIZE){
             
             
-            thr_v[ADCi]=(float)adc_arr[0] * ADC_VREF / ADC_MAX_COUNT;
+            thr_v[ADCi]=(float)adc_arr[1] * ADC_VREF / ADC_MAX_COUNT;
 //            sprintf(str_ADChist, "ADC 3.3V Input Voltage = %f V \n\r",thr_v[ADCi]);
 //            UARTprint(str_ADChist);
-            five_v[ADCi]=((float)adc_arr[1] * ADC_VREF / ADC_MAX_COUNT)*(5.0/3.0);
-            twelve_v[ADCi]=((float)adc_arr[2] * ADC_VREF / ADC_MAX_COUNT)*(4.1/1.1);
-            ftune[ADCi]=(float)adc_arr[3] * ADC_VREF / ADC_MAX_COUNT;
+            five_v[ADCi]=((float)adc_arr[2] * ADC_VREF / ADC_MAX_COUNT)*(4.964/2.988);
+            twelve_v[ADCi]=((float)adc_arr[0] * ADC_VREF / ADC_MAX_COUNT)*(4.096/1.093);
+            ftune[ADCi]=(float)adc_arr[3] * (ADC_VREF / ADC_MAX_COUNT);
             
             ADCi++;
             if(ADCi==(adc_ASIZE-1) && !adc_full){
@@ -57,13 +57,13 @@ void get_ADC(void){
         //TODO: make this into a function.. and use an array to store ADC counts
         result_ready = false;
         input_voltage = (float)adc_arr[0] * ADC_VREF / ADC_MAX_COUNT;
-        sprintf(str_adc, "RB0(AN2) 3.3V ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_arr[0], (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
+        sprintf(str_adc, "RB0(AN2) 12V ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_arr[0], (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
         UARTprint(str_adc);
         input_voltage = (float)adc_arr[1] * ADC_VREF / ADC_MAX_COUNT;
-        sprintf(str_adc, "RB14(AN9) 5V ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_arr[1], (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
+        sprintf(str_adc, "RB14(AN9) 3.3V ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_arr[1], (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
         UARTprint(str_adc);
         input_voltage = (float)adc_arr[2] * ADC_VREF / ADC_MAX_COUNT;
-        sprintf(str_adc, "RC5(AN15) 12V ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_arr[2], (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
+        sprintf(str_adc, "RC5(AN15) 5V ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_arr[2], (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));
         UARTprint(str_adc);
         input_voltage = (float)adc_arr[3] * ADC_VREF / ADC_MAX_COUNT;
         sprintf(str_adc, "RA6(AN19) FTUNE ADC Count = 0x%03x, ADC Input Voltage = %d.%d V \n\r", adc_arr[3], (int)input_voltage, (int)((input_voltage - (int)input_voltage)*100.0));

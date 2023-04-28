@@ -40,14 +40,15 @@ uint8_t writeDAC(uint16_t val){
  *  @param dac The voltage as a string
  *  @return void
  */
-void write_voltage_DAC(char *dac){
+void write_voltage_DAC(char *dac_voltage){
     char str1[100];
     // Check if the string is a valid number ie X.XX
-    if(isValidDecimal(dac)){
+    if(isValidDecimal(dac_voltage)){
         // Convert the string to a float
-        float dac_float = atof(dac);
+        float dac_float = atof(dac_voltage);
         // Calculate the integer DAC code to realize the given voltage
         uint16_t dac_val = dac_float * 4095 / 3.3;
+        float actual_dac = 3.3 * dac_val / 4095;
         
         if(dac_float > 3.3){
             // Print an error if the voltage is greater than 3.3 (out of range)
@@ -65,7 +66,7 @@ void write_voltage_DAC(char *dac){
                 UARTprint("Error occurred while writing to DAC\n\r");
             }
             else{
-                sprintf(str1,"Successfully wrote %fV to DAC\n\r", dac_float);
+                sprintf(str1,"wrote %.4fV (%d) to DAC\n\r", actual_dac, dac_val);
                 UARTprint(str1);
             }
         }

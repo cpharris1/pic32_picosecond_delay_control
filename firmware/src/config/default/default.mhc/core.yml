@@ -124,6 +124,13 @@ children:
       - type: User
         attributes: {value: DIGITAL}
   - type: String
+    attributes: {id: BSP_PIN_16_FUNCTION_TYPE}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: AN11}
+  - type: String
     attributes: {id: BSP_PIN_18_MODE}
     children:
     - type: Values
