@@ -173,7 +173,13 @@ int main ( void )
                         state = WAIT_RETURN;
                         break;
                     case '4': // Get current temperature/humidity data
-                     
+                        /* 
+                         * Sequence for getting DHT11 Data:
+                         *  Step 1: Send start signal - StartSignal()
+                         *  Step 2: Check if DHT11 is ready to send data - CheckResponse()
+                         *  Step 3: Read data from DHT11 and store to respective 
+                         *          variables - See lines 181-192
+                         */
                         StartSignal();
                         CheckResponse();
                         if(Check == 1){
@@ -197,48 +203,42 @@ int main ( void )
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '5': // Get temperature/humidity data history
+                    case '5': // Get temperature/humidity data history. Prints oldest data first.
                         UARTprint("Temp/Humid Data History\n\r");
                         UARTprint("i,C,RH\n\r");
                         
-                        if(dataCount==(ASIZE-1) && !flag_full){
+                        if(dataCount==(ASIZE-1) && !flag_full){ //checks if array is full
                             flag_full=1;
-                            sprintf(str, "Array is full, flag_full = %d\n\r",flag_full);
-                            UARTprint(str);
                         }
                         if(flag_full==1){
-                            //sprintf(str, "Back end printing, flag_full = %d\n\r",flag_full);
-                            //UARTprint(str);
+                            /* This is the back of the array. 
+                             * Will print this first when array is full. Starts at oldest data value*/
                             for(printData=dataCount;printData<ASIZE;printData++){
                                 sprintf(str, "%d,%d.%d,%d.%d\n\r", printData,T[printData],Tdec[printData],RHa[printData],RHdec[printData]);
                                 UARTprint(str);
                             }
                         }
-                        for(printData=0;printData<dataCount;printData++){
+                        for(printData=0;printData<dataCount;printData++){// this is the front of the array (newest data)
                             sprintf(str, "%d,%d.%d,%d.%d\n\r", printData,T[printData],Tdec[printData],RHa[printData],RHdec[printData]);
                             UARTprint(str);
                         }
                         printWaitReturn();
                         state = WAIT_RETURN;
                         break;
-                    case '6':
-                        UARTprint("Current ADC Data\n\r");
-                        //get_ADC(); 
+                    case '6': //Print ADC data History. Prints oldest data first
                         UARTprint("\n\rADC Data History\n\r");
                         UARTprint("Samp,3.3V,5V,12V,FTUNE\n\r");
                         
-                        if(ADCi==(adc_ASIZE-1) && !adc_full){
+                        if(ADCi==(adc_ASIZE-1) && !adc_full){ //checks if the arrays are full
                             adc_full=1;
-                            sprintf(str, "Array is full, adc_full = %d\n\r",adc_full);
-                            UARTprint(str);
                         }
                         if(adc_full==1){
-                            for(printADC=ADCi;printADC<adc_ASIZE;printADC++){
+                            for(printADC=ADCi;printADC<adc_ASIZE;printADC++){//this is the back of the array. Will print this first when array is full. Starts at oldest data value
                                 sprintf(str, "%d,%.3f,%.3f,%.3f,%.3f\n\r", printADC,thr_v[printADC],five_v[printADC],twelve_v[printADC],ftune[printADC]);
                                 UARTprint(str);    
                             }
                         }
-                        for(printADC=0;printADC<ADCi;printADC++){//this is the beginning of the array
+                        for(printADC=0;printADC<ADCi;printADC++){//this is the beginning of the array ( newest data)
                             sprintf(str, "%d,%.3f,%.3f,%.3f,%.3f\n\r", printADC,thr_v[printADC],five_v[printADC],twelve_v[printADC],ftune[printADC]);
                                 UARTprint(str); 
                         }
